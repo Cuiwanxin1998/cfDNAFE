@@ -4,13 +4,12 @@
 * [Section 1: Installation Tutorial](#section-1-installation-tutorial)
     * [Section 1.1: System requirement](#section-11-system-requirement)
     * [Section 1.2: Create environment and Install Dependencies](#section-12-create-environment-and-install-dependencies)
-    * [Section 1.3: Activate Environment and Use cfDNApipe](#section-13-activate-environment-and-use-cfdnapipe)
-* [Section 2: WGS Data Processing (Function:Bamprocess)](#section-2-wgs-data-processing-function-bamprocess)
-* [Section 3: Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD) (Function: runFSC/runFSD) ](#section-3-fragment-size-coverage-fsc-and-fragment-size-distribution-fsd-function-runfsc-runfsd)
-* [Section 4: Windows protection score(WPS) (Function:runWPS) ](#section-4-windows-protection-score-wps-function-runwps)
-* [Section 5: Orientation-aware cfDNA fragmentation(OCF) (Function:runOCF)](#section-5-orientation-aware-cfDNA-fragmentation-OCF-Function-runOCF)
-* [Section 6: Copy Number variations(CNV)(Function:runCNV) ](#section-6-copy-number-variations-CNV-Function-runCNV)
-* [Section 7: Mutation Signature(Function:runMutation) ](#section-7-mutation-signature-function-runmutation)
+* [Section 2: WGS Data Processing (Function:Bamprocess)](#section-2-wgs-data-processing)
+* [Section 3: Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD) (Function: runFSC/runFSD) ](#section-3-fragment-size-coverage-fsc-and-fragment-size-distribution-fsd)
+* [Section 4: Windows protection score(WPS) (Function:runWPS) ](#section-4-windows-protection-score-wps)
+* [Section 5: Orientation-aware cfDNA fragmentation(OCF) (Function:runOCF)](#section-5-orientation-aware-cfDNA-fragmentation-OCF)
+* [Section 6: Copy Number variations(CNV)(Function:runCNV) ](#section-6-copy-number-variations-CNV)
+* [Section 7: Mutation Signature(Function:runMutation) ](#section-7-mutation-signature)
 
 
 
