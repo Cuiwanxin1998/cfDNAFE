@@ -4,11 +4,11 @@
 * [Section 1: Installation Tutorial](#section-1-installation-tutorial)
     * [Section 1.1: System requirement](#section-11-system-requirement)
     * [Section 1.2: Create environment and Install Dependencies](#section-12-create-environment-and-install-dependencies)
-* [Section 2: WGS Data Processing (Function:Bamprocess)](#section-2-wgs-data-processing)
+* [Section 2: WGS Data Processing (Function:runBamprocess)](#section-2-wgs-data-processing)
 * [Section 3: Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD) (Function: runFSC/runFSD) ](#section-3-fragment-size-coverage-fsc-and-fragment-size-distribution-fsd)
-* [Section 4: Windows protection score(WPS) (Function:runWPS) ](#section-4-windows-protection-score-wps)
-* [Section 5: Orientation-aware cfDNA fragmentation(OCF) (Function:runOCF)](#section-5-orientation-aware-cfDNA-fragmentation-OCF)
-* [Section 6: Copy Number variations(CNV)(Function:runCNV) ](#section-6-copy-number-variations-CNV)
+* [Section 4: Windows protection score (WPS) (Function:runWPS) ](#section-4-windows-protection-score-wps)
+* [Section 5: Orientation-aware cfDNA fragmentation(OCF) (Function:runOCF)](#section-5-orientation-aware-cfdna-fragmentation-ocf)
+* [Section 6: Copy Number variations(CNV)(Function:runCNV) ](#section-6-copy-number-variations-cnv)
 * [Section 7: Mutation Signature(Function:runMutation) ](#section-7-mutation-signature)
 
 
@@ -21,8 +21,8 @@ The main functions are as the following picture.
 
 <center>
     <img style="border-radius: 0.3125em;
-    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);"
-    src="./pics/workflow.jpg">
+    box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
+    src="./pics/workFlow.jpg">
     <br>
     <div style="color:orange; border-bottom: 1px solid #d9d9d9;
     display: inline-block;
@@ -42,9 +42,9 @@ We recommend using [conda/Anaconda](https://www.anaconda.com/) and create a virt
 First, run the following command. The environment will be created and all the dependencies as well as the latest cfDNAFFE will be installed. In order to avoid unexpected errors, we recommend that you use R function **install.packages()** and** BiocManager::install()** to download R packages.
 
 ```shell
-#create a virtual environment
+#create a virtual environment and activate environment
 conda env create -n cfDNAFFE -f environment.yml
-
+conda activate cfDNAFFE
 #install dependencies
 
 #ichorCNA: Users can follow https://github.com/broadinstitute/ichorCNA/wiki/Installation
@@ -55,7 +55,7 @@ BiocManager::install('MutationalPatterns')
 ```
 
 
-## Section 2: WGS Data Processing (*Function:<font color=red>Bamprocess</font>*)
+## Section 2: WGS Data Processing
 
 cfDNAFFE mainly processes bam file data, which needs to be sorted by samtools. This function input is the initial step of cfDNAFFE, which mainly extracts the bed input files required by the following functions and Motif End, Breakpoint End, MDS.
 
@@ -126,7 +126,7 @@ output_folders/
 │   ├──sample2_MDS.txt
 ```
 
-## Section 3: Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD) (*Function:<font color=red>runFSC/runFSD</font>*)
+## Section 3: Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD)
 **FSC**: *The fragment sizes were used to construct fragmentation profiles with in-house scripts. The FSC was adapted from the [DELFI method](https://www.nature.com/articles/s41586-019-1272-6) and optimized by introducing an extra fragment size group and using improved cutoff. It was generated using the coverages of short (65-150bp), intermediate (151-260bp), long (261-400bp), and total (65-400bp) cfDNA fragments. The extended ranges allowed the inclusion of broader size regions than what DELFI has reported. The genome was firstly divided into 100 kB bins. Next, the coverage of the four fragment size groups in each 100 kB bin was calculated and corrected by GC content. We then combined the coverages in every 50 contiguous 100 kB bins to calculate the coverage in the corresponding 5 MB (50 × 100 kB) bin. For each fragmentation size group, the scaled coverage score (z-score) in every 5 MB bin was calculated by comparing the variable value against the overall mean value.*
 
 Here, we give an example how to get a 10kb bin file. Human genome chromosome length can be obtained through [UCSC](https://genome.ucsc.edu/index.html), here we only provide [GRCh37/hg19](https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/) and [GRCh38/hg38](https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/).
@@ -216,7 +216,7 @@ output_folders/
 ```
 
 
-## Section 4: Windows protection score(WPS) (*Function:<font color=red>runWPS</font>*)
+## Section 4: Windows protection score(WPS)
 **WPS**: *Both outer alignment coordinates of PE data were extracted for properly paired reads. Both end coordinates of SR alignments were extracted when PE data were collapsed to SR data by adapter trimming. A fragment coverage is defined as all positions rag between the two (inferred) , inclusive of endpoints. We define the [windowed protection score (WPS)](https://www.cell.com/cell/fulltext/S0092-8674(15)01569-X?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS009286741501569X%3Fshowall%3Dtrue) of a window of size k as the number of molecules spanning the window minus those with an endpoint within the window. *
 
 we will illustrate how to get gene bodies from gencode annotation files. Users can download gencode annotation files from [gencode database](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/), the commonly used files are [gencode.v19.annotation.gtf.gz](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz) for hg19 and [gencode.v37.annotation.gtf.gz](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_37/gencode.v37.annotation.gtf.gz) for hg38. Here, we use hg19 as an example.
@@ -230,8 +230,8 @@ anno_raw <- import("gencode.v19.annotation.gtf.gz")
 # get all genes
 anno_raw <- anno_raw[which(anno_raw$type == "gene"), ]
 
-anno <- data.frame(gene_id = anno_raw$gene_id, chr = seqnames(anno_raw),
-                   start = start(anno_raw), end = end(anno_raw),
+anno <- data.frame(gene_id = anno_raw$gene_id, chr = seqnames(anno_raw), 
+                   start = start(anno_raw), end = end(anno_raw), 
                    strand = strand(anno_raw))
 
 # get genome region downstream 10000bp from TSS
@@ -249,7 +249,7 @@ for (i in nrow(anno)) {
 anno <- anno[which(anno$chr %in% paste0("chr", c(1:22, "X"))), ]
 anno <- anno[which(anno$start > 0), ]
 
-write.table(x = anno, file = "transcriptAnno-v19.tsv", sep = "\t",
+write.table(x = anno, file = "transcriptAnno-v19.tsv", sep = "\t", 
             col.names = FALSE, row.names = FALSE, quote = FALSE)
 
 ```
@@ -305,7 +305,7 @@ output_folders/
 
 ```
 
-## Section 5: Orientation-aware cfDNA fragmentation(OCF) (*Function:<font color=red>runOCF</font>*)
+## Section 5: Orientation-aware cfDNA fragmentation(OCF)
 **OCF**: *To explore the potential in inferring the relative contributions of various tissues in the plasma DNA pool, [Sun *et al.*](https://genome.cshlp.org/content/29/3/418.full) developed a novel approach to measure the differential phasing of upstream (U) and downstream (D) fragment ends in tissue-specific open chromatin regions. They called this strategy orientation-aware cfDNA fragmentation (OCF) analysis. OCF values are based on the differences in U and D end signals in the center of the relevant open chromatin regions. For tissues that contributed DNA into plasma, one would expect much cfDNA fragmentation to have occurred at the nucleosome-depleted region in the center of the corresponding tissue-specific open chromatin regions. In such a region, U and D ends exhibited the highest read densities (i.e., peaks) at ∼60 bp from the center, whereas the peaks for U and D ends were located on the right- and left-hand sides, respectively. Conversely, this pattern would not be expected for tissue-specific open chromatin regions where the corresponding tissue did not contribute DNA into the plasma. Thus measured the differences of U and D end signals in 20-bp windows around the peaks in the tissue-specific open chromatin regions as the OCF value for the corresponding tissue.*
 
 Tissue-specific open chromatin regions can be found in [Supplemental_Code.zip](https://genome.cshlp.org/content/29/3/418/suppl/DC1)
@@ -362,7 +362,7 @@ output_folders/
 ```
 
 
-## Section 6: Copy Number variations(CNV)(*Function:<font color=red>runCNV</font>*)
+## Section 6: Copy Number variations(CNV)
 **CNV**: *The Copy Number Variation (CNV) profile was calculated using ichorCNA as reported by [Wan *et al.*](https://bmccancer.biomedcentral.com/articles/10.1186/s12885-019-6003-8). First, the genome of each sample was divided into 1 MB bins. For each bin, the depth after bin-level GC correction was used by a Hidden Markov Model (HMM) to compare against the software baseline. Then, we calculated the log2 ratio for the CNV score.*
 
 There are 2 main steps in this part, generating read count coverage information using readCounter from the HMMcopy suite.
@@ -461,7 +461,7 @@ output_folders/
 
 ```
 
-## Section 7:Mutation Signature(*Function:<font color=red>runMutation</font>*)
+## Section 7:Mutation Signature
 **Mutation signature**: *Each mutational process is thought to leave its own characteristic mark on the genome. For example, AID/APOBEC activity can specifically cause C > T and C > G substitutions at TpCpA and TpCpT sites (of which the underlined nucleotide is mutated.  Thus, patterns of somatic mutations can serve as readout of the mutational processes that have been active and as proxies for the molecular perturbations in a tumour. These [mutational signatures](https://doi.org/10.1038/nature12477) are characterized by a specific contribution of 96 base substitution types with a certain sequence context.*
 
 The R file Run_mutation in the scripts folder.
@@ -479,7 +479,7 @@ runMutation(
        pathToRunMutation=pathToRunMutation,
 	   vcfInput=vcfInput,
 	   outputdir=outputdir,
-	   id=ID,
+	   id=ID, 
 	   threads=None,
 )
 ```
