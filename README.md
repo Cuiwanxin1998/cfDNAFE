@@ -15,10 +15,10 @@
 
 ## Introduction
 
-**cfDNAFFE(<u>c</u>ell <u>f</u>ree <u>DNA</u> <u>F</u>ragment <u>F</u>eature <u>E</u>extraction)** is a tool for extracting cfDNA fragmentation features, tt contains <font color=red>**End Motif(EDM)**</font>,  <font color=red>**Breakpoint End(BPM)**</font>, <font color=red>**Motif-Diversity Score(MDS)**</font>, <font color=red>**Fragment Size Coverage (FSC)**</font>,<font color=red>**Fragment Size Distribution (FSD)**</font> ,<font color=red>** Windows protection score(WPS)**</font>,<font color=red>** Orientation-aware cfDNA fragmentation(OCF) value **</font>, <font color=red>**Copy Number variations(CNV)**</font>  and <font color=red>**mutation signature**</font>.
+**cfDNAFFE(<u>c</u>ell <u>f</u>ree <u>DNA</u> <u>F</u>ragment <u>F</u>eature <u>E</u>extraction)** is a tool for extracting cfDNA fragmentation features, it contains **<font color=red>End Motif(EDM)</font>**,  **<font color=red>Breakpoint End(BPM)</font>**, **<font color=red>Motif-Diversity Score(MDS)</font>**, **<font color=red>Fragment Size Coverage (FSC)</font>**,**<font color=red>Fragment Size Distribution (FSD)</font>** ,**<font color=red> Windows protection score(WPS)</font>**,**<font color=red> Orientation-aware cfDNA fragmentation(OCF) value</font>**, **<font color=red>Copy Number variations(CNV)</font>**  and **<font color=red>mutation signature</font>**.
 
 The main functions are as the following picture.
-
+<br/>
 <center>
     <img style="border-radius: 0.3125em;
     box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
@@ -29,6 +29,9 @@ The main functions are as the following picture.
     color: #999;
     padding: 2px;">cfDNAFFE Function</div>
 </center>
+
+<br/>
+
 
 
 ## Section 1: Installation Tutorial
