@@ -111,7 +111,5 @@ dependencies:
   - xorg-xproto=7.0.31=h27cfd23_1007
   - xz=5.2.10=h5eee18b_1
   - zstd=1.5.2=ha4553b6_0
-  - pip:
-    - cfdnaffe==1.0.1
-prefix: /home/cuiwx/anaconda3/envs/cfDNAFFE
+
 
