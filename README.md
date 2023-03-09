@@ -7,7 +7,7 @@
 * [Section 2: WGS Data Processing (Function:runBamprocess)](#section-2-wgs-data-processing)
 * [Section 3: Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD) (Function: runFSC/runFSD) ](#section-3-fragment-size-coverage-fsc-and-fragment-size-distribution-fsd)
 * [Section 4: Windows protection score (WPS) (Function:runWPS) ](#section-4-windows-protection-score-wps)
-* [Section 5: Orientation-aware cfDNA fragmentation(OCF) (Function:runOCF)](#section-5-orientation-aware-cfdna-fragmentation-ocf)
+* [Section 5: Orientation-aware cfDNA fragmentation (OCF) (Function:runOCF)](#section-5-orientation-aware-cfdna-fragmentation-ocf)
 * [Section 6: Copy Number variations(CNV)(Function:runCNV) ](#section-6-copy-number-variations-cnv)
 * [Section 7: Mutation Signature(Function:runMutation) ](#section-7-mutation-signature)
 
@@ -19,7 +19,6 @@
 
 The main functions are as the following picture.
 <br/>
-
 <center>
     <img style="border-radius: 0.3125em;
     box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
@@ -30,9 +29,6 @@ The main functions are as the following picture.
     color: #999;
     padding: 2px;">cfDNAFFE Function</div>
 </center>
-
-<br/>
-
 
 <br/>
 
@@ -49,6 +45,10 @@ We recommend using [conda/Anaconda](https://www.anaconda.com/) and create a virt
 First, run the following command. The environment will be created and all the dependencies as well as the latest cfDNAFFE will be installed. In order to avoid unexpected errors, we recommend that you use R function **install.packages()** and** BiocManager::install()** to download R packages.
 
 ```shell
+#download cfDNAFFE from github
+git clone https://github.com/Cuiwanxin1998/cfDNAFFE.git
+
+python3 setup.py install
 #create a virtual environment and activate environment
 conda env create -n cfDNAFFE -f environment.yml
 conda activate cfDNAFFE
@@ -223,7 +223,7 @@ output_folders/
 ```
 
 
-## Section 4: Windows protection score(WPS)
+## Section 4: Windows protection score (WPS)
 **WPS**: *Both outer alignment coordinates of PE data were extracted for properly paired reads. Both end coordinates of SR alignments were extracted when PE data were collapsed to SR data by adapter trimming. A fragment coverage is defined as all positions rag between the two (inferred) , inclusive of endpoints. We define the [windowed protection score (WPS)](https://www.cell.com/cell/fulltext/S0092-8674(15)01569-X?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS009286741501569X%3Fshowall%3Dtrue) of a window of size k as the number of molecules spanning the window minus those with an endpoint within the window. *
 
 we will illustrate how to get gene bodies from gencode annotation files. Users can download gencode annotation files from [gencode database](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/), the commonly used files are [gencode.v19.annotation.gtf.gz](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz) for hg19 and [gencode.v37.annotation.gtf.gz](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_37/gencode.v37.annotation.gtf.gz) for hg38. Here, we use hg19 as an example.
@@ -312,7 +312,7 @@ output_folders/
 
 ```
 
-## Section 5: Orientation-aware cfDNA fragmentation(OCF)
+## Section 5: Orientation-aware cfDNA fragmentation (OCF)
 **OCF**: *To explore the potential in inferring the relative contributions of various tissues in the plasma DNA pool, [Sun *et al.*](https://genome.cshlp.org/content/29/3/418.full) developed a novel approach to measure the differential phasing of upstream (U) and downstream (D) fragment ends in tissue-specific open chromatin regions. They called this strategy orientation-aware cfDNA fragmentation (OCF) analysis. OCF values are based on the differences in U and D end signals in the center of the relevant open chromatin regions. For tissues that contributed DNA into plasma, one would expect much cfDNA fragmentation to have occurred at the nucleosome-depleted region in the center of the corresponding tissue-specific open chromatin regions. In such a region, U and D ends exhibited the highest read densities (i.e., peaks) at ∼60 bp from the center, whereas the peaks for U and D ends were located on the right- and left-hand sides, respectively. Conversely, this pattern would not be expected for tissue-specific open chromatin regions where the corresponding tissue did not contribute DNA into the plasma. Thus measured the differences of U and D end signals in 20-bp windows around the peaks in the tissue-specific open chromatin regions as the OCF value for the corresponding tissue.*
 
 Tissue-specific open chromatin regions can be found in [Supplemental_Code.zip](https://genome.cshlp.org/content/29/3/418/suppl/DC1)
@@ -369,7 +369,7 @@ output_folders/
 ```
 
 
-## Section 6: Copy Number variations(CNV)
+## Section 6: Copy Number variations (CNV)
 **CNV**: *The Copy Number Variation (CNV) profile was calculated using ichorCNA as reported by [Wan *et al.*](https://bmccancer.biomedcentral.com/articles/10.1186/s12885-019-6003-8). First, the genome of each sample was divided into 1 MB bins. For each bin, the depth after bin-level GC correction was used by a Hidden Markov Model (HMM) to compare against the software baseline. Then, we calculated the log2 ratio for the CNV score.*
 
 There are 2 main steps in this part, generating read count coverage information using readCounter from the HMMcopy suite.
@@ -468,7 +468,7 @@ output_folders/
 
 ```
 
-## Section 7:Mutation Signature
+## Section 7: Mutation Signature
 **Mutation signature**: *Each mutational process is thought to leave its own characteristic mark on the genome. For example, AID/APOBEC activity can specifically cause C > T and C > G substitutions at TpCpA and TpCpT sites (of which the underlined nucleotide is mutated.  Thus, patterns of somatic mutations can serve as readout of the mutational processes that have been active and as proxies for the molecular perturbations in a tumour. These [mutational signatures](https://doi.org/10.1038/nature12477) are characterized by a specific contribution of 96 base substitution types with a certain sequence context.*
 
 The R file Run_mutation in the scripts folder.
