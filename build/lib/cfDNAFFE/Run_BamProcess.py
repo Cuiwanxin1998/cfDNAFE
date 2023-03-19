@@ -81,7 +81,7 @@ class runBamProcess(Base):
         # set outputdir
         if outputdir is None:
             self.setOutput(
-                "outputdir", os.path.dirname(os.path.abspath(self.getInput("bedgzInput")[0])),
+                "outputdir", os.path.dirname(os.path.abspath(self.getInput("bamInput")[0])),
             )
         else:
             self.setOutput("outputdir", outputdir)
@@ -116,6 +116,7 @@ class runBamProcess(Base):
         if not os.path.exists(outputdir):
             os.mkdir(outputdir)
         for x in self.getInput("bamInput"):
+
             outputfile = os.path.join(self.getOutput("outputdir"), self.getMaxFileNamePrefixV2(x)) + ".bed"
 
             sample_Bed.append(outputfile)

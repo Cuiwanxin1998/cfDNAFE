@@ -23,7 +23,7 @@ class Base:
             for name, value in zip(inputName, values):
                 self.inputs[name] = value
         else:
-            self.inputs[inputName] = [self.absolutePath(inputValue)]
+            self.inputs[inputName] = self.absolutePath(inputValue)
 
     # get input value by dict name (key)
     def getInput(self, inputName):
