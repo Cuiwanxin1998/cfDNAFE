@@ -4,8 +4,8 @@
 * [Section 1: Installation Tutorial](#section-1-installation-tutorial)
     * [Section 1.1: System requirement](#section-11-system-requirement)
     * [Section 1.2: Create environment and Install Dependencies](#section-12-create-environment-and-install-dependencies)
-* [Section 2: Bam Data Processing (Function:runBamprocess)](#section-2-bam-data-processing)
-* [Section 3: Fragment Size Ratrio (FSR) , Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD) (Function: runFSR/runFSC/runFSD) ](#section-3-fragment-size-ratio-fsr-fragment-size-coverage-fsc--and-fragment-size-distribution-fsd)
+* [Section 2: Bam File Data Processing (Function:runBamprocess)](#section-2-bam-file-data-processing)
+* [Section 3: Fragment Size Ratrio (FSR) and Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD) (Function: runFSR/runFSC/runFSD) ](#section-3-fragment-size-ratio-and-fsr-fragment-size-coverage-fsc--and-fragment-size-distribution-fsd)
 * [Section 4: Windows protection score (WPS) (Function:runWPS) ](#section-4-windows-protection-score-wps)
 * [Section 5: Orientation-aware cfDNA fragmentation (OCF) (Function:runOCF)](#section-5-orientation-aware-cfdna-fragmentation-ocf)
 * [Section 6: Copy Number variations(CNV)(Function:runCNV) ](#section-6-copy-number-variations-cnv)
@@ -23,7 +23,7 @@ The main functions are as the following picture.
 <center>
     <img style="border-radius: 0.3125em;
     box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.08);" 
-    src="./pics/workFlow.jpg">
+    src="./pics/workFlow.png">
     <br>
     <div style="color:orange; border-bottom: 1px solid #d9d9d9;
     display: inline-block;
@@ -153,7 +153,7 @@ output_folders/
 ├──sample1_MDS.txt 
 ```
 
-## Section 3: Fragment Size Ratio (FSR), Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD)
+## Section 3: Fragment Size Ratio (FSR) and Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD)
 **FSR**: The fragment sizes were used to construct fragmentation profiles with in-house scripts. The FSR was adapted from the [DELFI method](https://www.nature.com/articles/s41586-019-1272-6) and optimized by introducing an extra fragment size group and using improved cutoff. It was was generated using the short/intermediate/long fragments ratios except using different cutoffs: the short, intermediate and long fragments were defined as 65-150bp, 151-220bp and 221-400bp, according to the overall fragment lengths profile in our cohorts. 
 
 **FSC**: FSC was generated using the coverages of short (65-150bp), intermediate (151-260bp), long (261-400bp), and total (65-400bp) cfDNA fragments. The extended ranges allowed the inclusion of broader size regions than what DELFI has reported. The genome was firstly divided into 100 kB bins. Next, the coverage of the four fragment size groups in each 100 kB bin was calculated and corrected by GC content. We then combined the coverages in every 50 contiguous 100 kB bins to calculate the coverage in the corresponding 5 MB (50 × 100 kB) bin. For each fragmentation size group, the scaled coverage score (z-score) in every 5 MB bin was calculated by comparing the variable value against the overall mean value.
