@@ -7,16 +7,16 @@ def read(fname):
 
 
 setup(
-    name="cfDNAFFE",
-    version="0.0.1",
+    name="cfDNAFE",
+    version="0.1.0",
     author="Wanxin Cui, Xiaoqing Peng",
-    author_email="wxCui2020@csu.edu.cn",
+    author_email="xqpeng@csu.edu.cn",
     description="Fragment Feature Extraction For cfDNA Sequencing Data Analysis",
     license="Please see LICENSE.txt.",
-    keywords=["cell free DNA", "WGS", "Fragmentation", 'mutation', "CNV"],
+    keywords=["cell free DNA", "WGS","WGBS", "Fragmentation", 'mutation', "CNV","methylation"],
     url="https:// ",
     packages=find_packages(),
-    package_data={"cfDNAFFE": ["data/*", "temp/*"]},
+    package_data={"cfDNAFE": ["data/*", "temp/*"]},
     long_description=read("README.rst"),
     platforms="Linux/Unix",
 )

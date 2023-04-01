@@ -1,21 +1,22 @@
-# cfDNAFFE
+# cfDNAFE
 
 * [Introduction](#introduction)
 * [Section 1: Installation Tutorial](#section-1-installation-tutorial)
     * [Section 1.1: System requirement](#section-11-system-requirement)
     * [Section 1.2: Create environment and Install Dependencies](#section-12-create-environment-and-install-dependencies)
-* [Section 2: WGS Data Processing (Function:runBamprocess)](#section-2-wgs-data-processing)
-* [Section 3: Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD) (Function: runFSC/runFSD) ](#section-3-fragment-size-coverage-fsc-and-fragment-size-distribution-fsd)
+* [Section 2: Bam Data Processing (Function:runBamprocess)](#section-2-bam-data-processing)
+* [Section 3: Fragment Size Ratrio (FSR) , Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD) (Function: runFSR/runFSC/runFSD) ](#section-3-fragment-size-ratio-fsr-fragment-size-coverage-fsc--and-fragment-size-distribution-fsd)
 * [Section 4: Windows protection score (WPS) (Function:runWPS) ](#section-4-windows-protection-score-wps)
 * [Section 5: Orientation-aware cfDNA fragmentation (OCF) (Function:runOCF)](#section-5-orientation-aware-cfdna-fragmentation-ocf)
 * [Section 6: Copy Number variations(CNV)(Function:runCNV) ](#section-6-copy-number-variations-cnv)
 * [Section 7: Mutation Signature(Function:runMutation) ](#section-7-mutation-signature)
+* [Section 8: UXM fragment-level (Function:runMeth) ](#section-8-uxm-fragment-level)
 
 
 
 ## Introduction
 
-**cfDNAFFE(<u>c</u>ell <u>f</u>ree <u>DNA</u> <u>F</u>ragment <u>F</u>eature <u>E</u>extraction)** is a tool for extracting cfDNA fragmentation features, it contains **<font color=red>End Motif(EDM)</font>**,  **<font color=red>Breakpoint End(BPM)</font>**, **<font color=red>Motif-Diversity Score(MDS)</font>**, **<font color=red>Fragment Size Coverage (FSC)</font>**,**<font color=red>Fragment Size Distribution (FSD)</font>** ,**<font color=red> Windows protection score(WPS)</font>**,**<font color=red> Orientation-aware cfDNA fragmentation(OCF) value</font>**, **<font color=red>Copy Number variations(CNV)</font>**  and **<font color=red>mutation signature</font>**.
+**cfDNAFE(<u>c</u>ell free DNA <u>F</u>eature <u>E</u>extraction)** is a tool for extracting cfDNA features, it contains **<font color=red>End Motif(EDM)</font>**,  **<font color=red>Breakpoint End(BPM)</font>**, **<font color=red>Motif-Diversity Score(MDS)</font>**, **<font color=red>Fragment Size Ratio (FSR)</font>**,**<font color=red>Fragment Size Distribution (FSD)</font>** ,**<font color=red> Windows protection score(WPS)</font>**,**<font color=red> Orientation-aware cfDNA fragmentation(OCF) value</font>**, **<font color=red>Copy Number variations(CNV)</font>**, **<font color=red>UXM fragment-level</font>** and **<font color=red>mutation signature</font>**.
 
 The main functions are as the following picture.
 <br/>
@@ -27,7 +28,7 @@ The main functions are as the following picture.
     <div style="color:orange; border-bottom: 1px solid #d9d9d9;
     display: inline-block;
     color: #999;
-    padding: 2px;">cfDNAFFE Function</div>
+    padding: 2px;">cfDNAFE Function</div>
 </center>
 
 <br/>
@@ -37,60 +38,90 @@ The main functions are as the following picture.
 ## Section 1: Installation Tutorial
 
 ### Section 1.1: System requirement
-Since many WGS analysis toolkits are released on Unix/Linux systems, they are based on different programming languages. Therefore, it is very difficult to rewrite all software in one language. Fortunately, the [conda](https://docs.conda.io/en/latest/)/[bioconda](http://bioconda.github.io/)  program collects many popular python modules and bioinformatics software, so we can install all dependencies via  [conda](https://docs.conda.io/en/latest/)/[bioconda](http://bioconda.github.io/).
+Since many whole genome sequencing(WGS) or whole genome bisulfite sequencing(WGBS) analysis toolkits are released on Unix/Linux systems, they are based on different programming languages. Therefore, it is very difficult to rewrite all software in one language. Fortunately, the [conda](https://docs.conda.io/en/latest/)/[bioconda](http://bioconda.github.io/)  program collects many popular python modules and bioinformatics software, so we can install all dependencies via  [conda](https://docs.conda.io/en/latest/)/[bioconda](http://bioconda.github.io/).
 
 We recommend using [conda/Anaconda](https://www.anaconda.com/) and create a virtual environment to manage all the dependencies.
 
 ### Section 1.2: Create environment and Install Dependencies
-First, run the following command. The environment will be created and all the dependencies as well as the latest cfDNAFFE will be installed. In order to avoid unexpected errors, we recommend that you use R function **install.packages()** and** BiocManager::install()** to download R packages.
+First, run the following command. The environment will be created and all the dependencies as well as the latest cfDNAFE will be installed. In order to avoid unexpected errors, we recommend that you use R function **install.packages()** and** BiocManager::install()** to download R packages.
 
 ```shell
-#download cfDNAFFE from github
-git clone https://github.com/Cuiwanxin1998/cfDNAFFE.git
+#download cfDNAFE from github(From cfDNAFE you can get the files necessary for the software to run)
+git clone https://github.com/Cuiwanxin1998/cfDNAFE.git
 
 python3 setup.py install
 #create a virtual environment and activate environment
-conda env create -n cfDNAFFE -f environment.yml
-conda activate cfDNAFFE
+conda env create -n cfDNAFE -f environment.yml
+conda activate cfDNAFE
+```
+Second, if you want to extract CNVS and mutational signatures, You must install R packages ichorCNA and Mutationalpattern. You need to get into the R language, You can enter the R environment by typing `R` in the Sheel command.
+```
+#How to download ichorCNA
+#Option1(Recommended), you can use devtools
+install.packages("devtools")
+library(devtools)
+install_github("broadinstitute/ichorCNA")
+#Option2
+#Checkout the latest release of ichorCNA from GitHub
+git clone git@github.com:broadinstitute/ichorCNA.git  
+ ##install from CRAN
+ install.packages("plyr") 
+ ## install packages from
+ source("https://bioconductor.org/biocLite.R")
+ BiocManager::install("HMMcopy")  
+ BiocManager::install("GenomeInfoDb")  
+ BiocManager::install("GenomicRanges")  
+## from the command line and in the directory where ichorCNA github was cloned.
+ R CMD INSTALL ichorCNA   
+
+
+#How to download MutationalPattern
+install.packages("BiocManager")
+BiocManager::install('MutationalPatterns')
 #install dependencies
 
-#ichorCNA: Users can follow https://github.com/broadinstitute/ichorCNA/wiki/Installation
 
-#MutationalPatterns
-BiocManager::install('MutationalPatterns')
+
+ 
 
 ```
 
 
-## Section 2: WGS Data Processing
+## Section 2: Bam File Data Processing
 
-cfDNAFFE mainly processes bam file data, which needs to be sorted by samtools. This function input is the initial step of cfDNAFFE, which mainly extracts the bed input files required by the following functions and Motif End, Breakpoint End, MDS.
+cfDNAFE mainly processes bam file data, which needs to be indexing by samtools. This function input is the initial step of cfDNAFE, which mainly extracts the bed input files required by the following functions and Motif End, Breakpoint End, MDS.
+
+Human reference genome  can be obtained through [UCSC](https://genome.ucsc.edu/index.html), here we only provide [GRCh37/hg19](https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/) and [GRCh38/hg38](https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/).
+
 
 - Example Usage
 
 ```Python
 from cfDNAFEE import *
+import os
+#You can get bamInput by simply entering the path where the bam file is stored, as Lines 3 through 9,
+bamPath='/path/to/sotred_bamfile/'
+bamInput=[]
+files=os.listdir(bamPath)
+for file in files:
+    if file.endswith('.bam'):
+        bamInput.append(os.path.join(bamPath, file)) 
 
-bamInput=['path_to_sample1','path_to_sample2']
-blacklistInput='path_to_blacklist_region'
-outputdir='path_to_outputdir'
-genome_reference='path_to_human_genome_reference'
-CHR = ['chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10',
-               'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr18', 'chr19', 'chr20', 'chr21',
-               'chr22']
+#We provide blacklist file for hg19 and hg38, you can find in /cfDNAFE/data/BlackList/
+#If you want to other version of blacklist, you can download from here: https://github.com/Boyle-Lab/Blacklist/
+blacklistInput='/path/to/cfDNAFE/data/BlackList/blacklist_region'
+
+#You can go to the UCSC website to download the latest versions of the human reference genome hg38 and hg19 as compressed files and unzip them
+genome_reference='/path/to/human_genome_reference'
+
+# You can choose the output folder to save the output file, if there is no output folder, cfDNAFE will choose bamInput path as the output folder
+outputdir='/path/to/outputdir'
 
 runBamProcess(
         bamInput=bamInput,
         blacklistInput=blacklistInut,
         outputdir=outputdir,
         genome_reference=genome_reference,
-        CHR=CHR,
-        mapQuality=30,
-        fragFilter=False,
-        minLen=None,
-        maxLen=None,
-        k_mer=6,
-        threads=None
 )
 
 ```
@@ -98,14 +129,11 @@ runBamProcess(
 - Detailed parameters
 
 ```
-bamInput: list, input .bam files.
+bamInput: list, bam file for WGBS or WGS
 blacklistInput: str, regions of blacklist file. download from this site (https://github.com/Boyle-Lab/Blacklist/).
 outputdir: str, output result folder, None means the same folder as input files.
-genome_reference: str, input .fa or fa.gz file.
-CHR: list, Chromosomes to be processed(default ['chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10',
-'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr18', 'chr19', 'chr20', 'chr21',
-'chr22', 'chrX']).
-empty: bool, keep files of empty blocks (default False).
+genome_reference: str, input .fa file.
+CHR: list, Chromosomes to be processed(default ['chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10','chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr18', 'chr19', 'chr20', 'chr21','chr22', 'chrX']).
 fragFilter: bool, (default False). Whether filter fragment by length, only for paired data.
 minLen: int, Min fragment length.
 maxLen: int, Max fragment length.
@@ -117,30 +145,24 @@ threads: int (default None) Whether to use multithreading
 
 ```
 output_folders/
-├──sample1/
-│   ├──sample1.bed
-│   ├──sample1.bed.gz
-│   ├──sample1.bed.gz.tbi
-│   ├──sample1_EndMotif.txt
-│   ├──sample1_BreakPointMotif.txt
-│   ├──sample1_MDS.txt
-├──sample2/
-│   ├──sample2.bed
-│   ├──sample2.bed.gz
-│   ├──sample2.bed.gz.tbi
-│   ├──sample2_EndMotif.txt
-│   ├──sample2_BreakPointMotif.txt
-│   ├──sample2_MDS.txt
+├──sample1.bed
+├──sample1.bed.gz
+├──sample1.bed.gz.tbi
+├──sample1_EndMotif.txt
+├──sample1_BreakPointMotif.txt
+├──sample1_MDS.txt 
 ```
 
-## Section 3: Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD)
-**FSC**: *The fragment sizes were used to construct fragmentation profiles with in-house scripts. The FSC was adapted from the [DELFI method](https://www.nature.com/articles/s41586-019-1272-6) and optimized by introducing an extra fragment size group and using improved cutoff. It was generated using the coverages of short (65-150bp), intermediate (151-260bp), long (261-400bp), and total (65-400bp) cfDNA fragments. The extended ranges allowed the inclusion of broader size regions than what DELFI has reported. The genome was firstly divided into 100 kB bins. Next, the coverage of the four fragment size groups in each 100 kB bin was calculated and corrected by GC content. We then combined the coverages in every 50 contiguous 100 kB bins to calculate the coverage in the corresponding 5 MB (50 × 100 kB) bin. For each fragmentation size group, the scaled coverage score (z-score) in every 5 MB bin was calculated by comparing the variable value against the overall mean value.*
+## Section 3: Fragment Size Ratio (FSR), Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD)
+**FSR**: The fragment sizes were used to construct fragmentation profiles with in-house scripts. The FSR was adapted from the [DELFI method](https://www.nature.com/articles/s41586-019-1272-6) and optimized by introducing an extra fragment size group and using improved cutoff. It was was generated using the short/intermediate/long fragments ratios except using different cutoffs: the short, intermediate and long fragments were defined as 65-150bp, 151-220bp and 221-400bp, according to the overall fragment lengths profile in our cohorts. 
 
-Here, we give an example how to get a 10kb bin file. Human genome chromosome length can be obtained through [UCSC](https://genome.ucsc.edu/index.html), here we only provide [GRCh37/hg19](https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/) and [GRCh38/hg38](https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/).
+**FSC**: FSC was generated using the coverages of short (65-150bp), intermediate (151-260bp), long (261-400bp), and total (65-400bp) cfDNA fragments. The extended ranges allowed the inclusion of broader size regions than what DELFI has reported. The genome was firstly divided into 100 kB bins. Next, the coverage of the four fragment size groups in each 100 kB bin was calculated and corrected by GC content. We then combined the coverages in every 50 contiguous 100 kB bins to calculate the coverage in the corresponding 5 MB (50 × 100 kB) bin. For each fragmentation size group, the scaled coverage score (z-score) in every 5 MB bin was calculated by comparing the variable value against the overall mean value.
+
+We provide 10kb window files for hg19 and hg38, you can find in **/cfDNAFE/data/ChormosomeBins**, if you want to extract them yourself, Here, we give an example how to get a 10kb bin file.
 
 ```Python
 import pybedtools
-chromsize = 'path_to_genome_size'
+chromsize = '/path/to/genome_size'
 a = pybedtools.BedTool(chromsize)
 binlen = 100000
 bins_init = a.window_maker(w=binlen, g=chromsize)
@@ -176,16 +198,35 @@ bins_fin.saveas('10kb_bin.bed')
 
 
 
-**FSD**: *The FSD feature examined the coverage of cfDNA fragments ranging from 65 bps to 400 bps in 5 bp stepwise (e.g., 65-69 bps, 70-74 bps…) at every chromosome arm. The raw coverage score of FSD was also scaled into the z-score by comparing the variable value against the overall mean value. *
+**FSD**: The FSD examined fragment length patterns at a high resolution by grouping cfDNA fragments into length bins of 5bp ranging from 65bp and 400bp and calculating the ratio of fragments in each bin at arm level for each chromosome. A total of 41
+chromosome arms were examined.
+
+We provide chromosome arms files for hg19 and hg38, you can find in **/cfDNAFE/data/ChormosomeArms**
 - Example Usage
 
 ```Python
-from cfDNAFEE import *
+from cfDNAFE import *
+import os
+#You can get bedgzInput by simply entering the path where the bam file is stored, as Lines 5 through 10
+#You can get the .bedgz file by running the function runBamProcess, the runBamProcess have been introduced in the section2
+bedgzPath='/path/to/bedgz_file/'
+bedgzInput=[]
+files=os.listdir(bedgzPath)
+for file in files:
+    if file.endswith('.bed.gz'):
+        bedgzInput.append(os.path.join(bedgzPath, file))
+#the binInput you can find in /cfDNAFE/data/ChormosomeBins/.
+binInput='/path/to/cfDNAFE/data/ChormosomeBins/hg38_window_10kb.bed'
 
-bedgzInput=['sample1.bed.gz','sample1.bed.gz']
-binInput='path_to_10kb_bin.bed'
-armsInput='path_to_arms.bed'
-outputdir='path_to_outputdir'
+#the armsInput you can find in /cfDNAFE/data/ChormosomeArms/.
+armsInput='/path/to/cfDNAFE/data/ChormosomeArms/hg38.arms.bed'
+outputdir='/path/to/outputdir/'
+runFSR(
+        bedgzInput=bedgzInput,
+        binInput=binInput,
+        outputdir=outputdir,
+        threads=None
+)
 runFSC(
         bedgzInput=bedgzInput,
         binInput=binInput,
@@ -202,19 +243,36 @@ runFSD(
 ```
 
 - Detailed parameters
-
+**runFSR**:
+```
+ bedgzInput: list, input bed.gz files.
+ binInput: str, regions of chromosome N kb bin file.
+ windows:int, the window size.
+ outputdir: str, output result folder, None means the same folder as input files.
+ threads: int, Whether to use multithreading
+```
+**runFSC**:
+```
+ bedgzInput: list, input bed.gz files.
+ binInput: str, regions of chromosome N kb bin file.
+ windows:int, the window size.
+ outputdir: str, output result folder, None means the same folder as input files.
+ threads: int, Whether to use multithreading
+```
+**runFSD**:
 ```
 bedgzInput: list, input bed.gz files.
-binInput: str, regions of chromosome 10kb bin file.
 armsInput: str, regions of chromosome arms file.
 outputdir: str, output result folder, None means the same folder as input files.
-threads: int (default None) Whether to use multithreading
+threads: int, Whether to use multithreading
 ```
 
 - Output Folder Arrangement
 
 ```
 output_folders/
+├──sample1.FSR.txt
+├──sample2.FSR.txt
 ├──sample1.FSC.txt
 ├──sample2.FSC.txt
 ├──sample1.FSD.txt
@@ -224,9 +282,11 @@ output_folders/
 
 
 ## Section 4: Windows protection score (WPS)
-**WPS**: *Both outer alignment coordinates of PE data were extracted for properly paired reads. Both end coordinates of SR alignments were extracted when PE data were collapsed to SR data by adapter trimming. A fragment coverage is defined as all positions rag between the two (inferred) , inclusive of endpoints. We define the [windowed protection score (WPS)](https://www.cell.com/cell/fulltext/S0092-8674(15)01569-X?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS009286741501569X%3Fshowall%3Dtrue) of a window of size k as the number of molecules spanning the window minus those with an endpoint within the window. *
+**WPS**: Both outer alignment coordinates of PE data were extracted for properly paired reads. Both end coordinates of SR alignments were extracted when PE data were collapsed to SR data by adapter trimming. A fragment coverage is defined as all positions rag between the two (inferred) , inclusive of endpoints. We define the [windowed protection score (WPS)](https://www.cell.com/cell/fulltext/S0092-8674(15)01569-X?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS009286741501569X%3Fshowall%3Dtrue) of a window of size k as the number of molecules spanning the window minus those with an endpoint within the window. 
 
-we will illustrate how to get gene bodies from gencode annotation files. Users can download gencode annotation files from [gencode database](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/), the commonly used files are [gencode.v19.annotation.gtf.gz](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz) for hg19 and [gencode.v37.annotation.gtf.gz](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_37/gencode.v37.annotation.gtf.gz) for hg38. Here, we use hg19 as an example.
+We provide the gene bodies for hg19 and hg38, you can find in **/cfDNAFE/data/transcriptAnno/**
+
+Moreover, we will illustrate how to get gene bodies from gencode annotation files. Users can download gencode annotation files from [gencode database](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/), the commonly used files are [gencode.v19.annotation.gtf.gz](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz) for hg19 and [gencode.v37.annotation.gtf.gz](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_37/gencode.v37.annotation.gtf.gz) for hg38. Here, we use hg19 as an example.
 
 ```R
 library(rtracklayer)
@@ -264,20 +324,24 @@ write.table(x = anno, file = "transcriptAnno-v19.tsv", sep = "\t",
 - Example Usage
 
 ```Python
-from cfDNAFEE import *
+from cfDNAFE import *
+import os
+#You can get bedgzInput by simply entering the path where the bam file is stored, as Lines 5 through 10
+#You can get the .bedgz file by running the function runBamProcess, the runBamProcess have been introduced in the section2
+bedgzPath='/path/to/bedgz_file/'
+bedgzInput=[]
+files=os.listdir(bedgzPath)
+for file in files:
+    if file.endswith('.bed.gz'):
+        bedgzInput.append(os.path.join(bedgzPath, file)) 
 
-bedgzInput=['sample1.bed.gz','sample1.bed.gz']
-tsvInput='path_to_transcript.tsv'
-outputdir='path_to_outputdir'
+#You can find the tsvInput in the /cfDNAFE/data/transcriptAnno/
+tsvInput='/path/to/cfDNAFE/data/transcriptAnno/transcriptAnno-v29-hg38.tsv'
+outputdir='/path/to/outputdir'
 runWPS(
-        bedgzInput=None,
-        tsvInput=None,
-        outputdir=None,
-        protectInput=120,
-        empty=False,
-        minSize=120,
-        maxSize=180,
-        threads=None
+        bedgzInput=bedgzInput,
+        tsvInput=tsvInput,
+        outputdir=outputdir
 )
 
 ```
@@ -313,23 +377,32 @@ output_folders/
 ```
 
 ## Section 5: Orientation-aware cfDNA fragmentation (OCF)
-**OCF**: *To explore the potential in inferring the relative contributions of various tissues in the plasma DNA pool, [Sun *et al.*](https://genome.cshlp.org/content/29/3/418.full) developed a novel approach to measure the differential phasing of upstream (U) and downstream (D) fragment ends in tissue-specific open chromatin regions. They called this strategy orientation-aware cfDNA fragmentation (OCF) analysis. OCF values are based on the differences in U and D end signals in the center of the relevant open chromatin regions. For tissues that contributed DNA into plasma, one would expect much cfDNA fragmentation to have occurred at the nucleosome-depleted region in the center of the corresponding tissue-specific open chromatin regions. In such a region, U and D ends exhibited the highest read densities (i.e., peaks) at ∼60 bp from the center, whereas the peaks for U and D ends were located on the right- and left-hand sides, respectively. Conversely, this pattern would not be expected for tissue-specific open chromatin regions where the corresponding tissue did not contribute DNA into the plasma. Thus measured the differences of U and D end signals in 20-bp windows around the peaks in the tissue-specific open chromatin regions as the OCF value for the corresponding tissue.*
+**OCF**: To explore the potential in inferring the relative contributions of various tissues in the plasma DNA pool, [Sun *et al.*](https://genome.cshlp.org/content/29/3/418.full) developed a novel approach to measure the differential phasing of upstream (U) and downstream (D) fragment ends in tissue-specific open chromatin regions. They called this strategy orientation-aware cfDNA fragmentation (OCF) analysis. OCF values are based on the differences in U and D end signals in the center of the relevant open chromatin regions. For tissues that contributed DNA into plasma, one would expect much cfDNA fragmentation to have occurred at the nucleosome-depleted region in the center of the corresponding tissue-specific open chromatin regions. In such a region, U and D ends exhibited the highest read densities (i.e., peaks) at ∼60 bp from the center, whereas the peaks for U and D ends were located on the right- and left-hand sides, respectively. Conversely, this pattern would not be expected for tissue-specific open chromatin regions where the corresponding tissue did not contribute DNA into the plasma. Thus measured the differences of U and D end signals in 20-bp windows around the peaks in the tissue-specific open chromatin regions as the OCF value for the corresponding tissue.
 
-Tissue-specific open chromatin regions can be found in [Supplemental_Code.zip](https://genome.cshlp.org/content/29/3/418/suppl/DC1)
+We provide tissue specific open chromatin regions for seven tissues, you can find in **/cfDNAFE/data/OpenChromatinRegion/**
+
 
 - Example Usage
 
 ```Python
-from cfDNAFEE import *
+from cfDNAFE import *
+import os
+#You can get bedgzInput by simply entering the path where the bam file is stored, as Lines 5 through 10
+#You can get the .bedgz file by running the function runBamProcess, the runBamProcess have been introduced in the section2
+bedgzPath='/path/to/bedgz_file/'
+bedgzInput=[]
+files=os.listdir(bedgzPath)
+for file in files:
+    if file.endswith('.bed.gz'):
+        bedgzInput.append(os.path.join(bedgzPath, file)) 
 
-bedgzInput=['sample1.bed.gz','sample1.bed.gz']
-ocrInput='path_to_open_chromosome_region.bed'
-outputdir='path_to_outputdir'
+#You can get ocrInput in /cfDNAFE/data/OpenChromatinRegion/
+ocrInput='/path/to /cfDNAFE/data/OpenChromatinRegion/7specificTissue.all.OC.bed'
+outputdir='/path/to/outputdir'
 runOCF(
-        bedgzInput=None,
-        ocrInput=None,
-        outputdir=None,
-        threads=None,
+        bedgzInput=bedgzInput,
+        ocrInput=ocrInput,
+        outputdir=outputdir
 )
 
 ```
@@ -370,53 +443,66 @@ output_folders/
 
 
 ## Section 6: Copy Number variations (CNV)
-**CNV**: *The Copy Number Variation (CNV) profile was calculated using ichorCNA as reported by [Wan *et al.*](https://bmccancer.biomedcentral.com/articles/10.1186/s12885-019-6003-8). First, the genome of each sample was divided into 1 MB bins. For each bin, the depth after bin-level GC correction was used by a Hidden Markov Model (HMM) to compare against the software baseline. Then, we calculated the log2 ratio for the CNV score.*
+**CNV**: The Copy Number Variation (CNV) profile was calculated using ichorCNA as reported by [Wan *et al.*](https://bmccancer.biomedcentral.com/articles/10.1186/s12885-019-6003-8). First, the genome of each sample was divided into 1 MB bins. For each bin, the depth after bin-level GC correction was used by a Hidden Markov Model (HMM) to compare against the software baseline. Then, we calculated the log2 ratio for the CNV score.
 
 There are 2 main steps in this part, generating read count coverage information using readCounter from the HMMcopy suite.
-Copy number analysis using ichorCNA R package. Users can find the [input parameters](https://github.com/broadinstitute/ichorCNA/tree/master/inst/extdata). In the output results, we can find the log2 transformed CNV from the fourth column in the **sample.cna.seg** file.
+Copy number analysis using ichorCNA, you can find in the **/cfDNAFE/scripts/**
+Users can find the [input parameters](https://github.com/broadinstitute/ichorCNA/tree/master/inst/extdata). In the output results, we can find the log2 transformed CNV from the fourth column in the **sample.cna.seg** file.
 
-- Example Usage
+- Example Usage **(Fisrt Step: Generating read count)**
 
 ```Python
 from cfDNAFEE import *
+import os
 
+#You can get bamInput by simply entering the path where the bam file is stored, as Lines 5 through 10
+bamPath='/path/to/sotred_bamfile/'
+bamInput=[]
+files=os.listdir(bamPath)
+for file in files:
+    if file.endswith('.bam'):
+        bamInput.append(os.path.join(bamPath, file)) 
+		
 #generating read count coverage information
-bamInput=['sample1_sort.bam','sample2_sort.bam']
-pathToreadCounter='path_to_HMMcopy_ReadCounter'
-outputdir='path_to_outputdir'
+outputdir='/path/to/outputdir'
 readCounter(
-        pathToreadCounter=None,
 		bamInput=bamInput,
-		outputdir=outputdir,
-		window_size=1000000
+		outputdir=outputdir
 )
-#Copy number analysis
-pathTorunIchorCNA='path_to_runIchorCNA.R'
-wig=['sample1.wig','sample2.wig']
-gcWig='path_to_gc_content.wig'
-mapWig='path_to_mappability.wig'
-ID=['sample1','sample2']
+```
+- Example Usage **(Second Step: Copy Number Analysis)**
+
+```
+from cfDNAFE import *
+import os
+
+#You can get wigInput and ID by simply entering the path where the bam file is stored, as Lines 6 through 13
+#You can get the .wig file by running the function readCounter, the readCounter have been introduced in the section6
+wigPath='/path/to/sotred_bamfile/'
+wigInput=[]
+ID=[]
+files=os.listdir(wigPath)
+for file in files:
+    if file.endswith('.wig'):
+        wigInput.append(os.path.join(wigPath, file)) 
+		ID.append(os.path.splitext(file)[0] )
+
+#You can find the runIchorCNA.R scripts in the /cfDNAFE/scripts
+pathTorunIchorCNA='/path/to/runIchorCNA.R'
+
+#You can find the gcWig and mapWig in /cfDNAFE/data/CNVdependency
+gcWig='/path/to/cfDNAFE/data/CNVdependecy/gc_hg38_1000kb.wig'
+mapWig='/path/to/cfDNAFE/data/CNVdependecy/map_hg38_1000kb.wig'
+
+#You can find the centromere in /cfDNAFE/data/CNVdependecy
+centromere='/path/to/cfDNAFE/data/CNVdependecy/GRCh38.GCA_000001405.2_centromere_acen.txt'
 runCNV(
         pathTorunIchorCNA=pathTorunIchorCNA,
-		wig=wig,
-		ploidy="'c(2)'",
-		normal="'c(0.95, 0.99, 0.995, 0.999)'",
-		maxCN=3,
+		wig=wigInput,
 		gcWig=gcWig,
 		ID=ID,
 		mapWig=mapWig,
-		centromere=None,
-		normalPanel=None,
-		includeHOMD=False,
-		chrs="'c(1:22)'",
-		chrTrain="'c(1:22)'",
-		estimateNormal=True,
-		estimatePloidy=True,
-		estimateScPrevalence=False,
-		scStates="'c()'",
-		txnE=0.9999999,
-		txnStrength=1000000,
-		outputdir=None,
+		centromere=centromere,
 		threads=NONE
 )
 ```
@@ -462,38 +548,77 @@ threads: int (default None) Whether to use multithreading.
 ```
 output_folders/
 ├──sample1.wig
-├──sample1.cna.seg
+├──sample1.CNV
 ├──sample2.wig
-├──sample2.cna.seg
+├──sample2.CNV
 
 ```
 
 ## Section 7: Mutation Signature
-**Mutation signature**: *Each mutational process is thought to leave its own characteristic mark on the genome. For example, AID/APOBEC activity can specifically cause C > T and C > G substitutions at TpCpA and TpCpT sites (of which the underlined nucleotide is mutated.  Thus, patterns of somatic mutations can serve as readout of the mutational processes that have been active and as proxies for the molecular perturbations in a tumour. These [mutational signatures](https://doi.org/10.1038/nature12477) are characterized by a specific contribution of 96 base substitution types with a certain sequence context.*
+**Mutation signature**: Each mutational process is thought to leave its own characteristic mark on the genome. For example, AID/APOBEC activity can specifically cause C > T and C > G substitutions at TpCpA and TpCpT sites (of which the underlined nucleotide is mutated.  Thus, patterns of somatic mutations can serve as readout of the mutational processes that have been active and as proxies for the molecular perturbations in a tumour. These [mutational signatures](https://doi.org/10.1038/nature12477) are characterized by a specific contribution of 96 base substitution types with a certain sequence context.
 
-The R file Run_mutation in the scripts folder.
+If you do not have vcf files, cfDNAFE provide a function **BamToVcf** to help user convert bam files to vcf files, you can filter out fragments with lower alignment and base quality.
 
-- Example Usage
+- Example Usage **(run BamToVcf)**
 
 ```Python
-from cfDNAFEE import *
+from cfDNAFE import *
+import os 
 
-pathToRunMutation='path_to_RunMutation.R'
-vcfInput=['path/to/vcfInput1', 'path/to/vcfInput2']
+#You can get bamInput by simply entering the path where the bam file is stored, as Lines 5 through 10
+bamPath='/path/to/sotred_bamfile/'
+bamInput=[]
+files=os.listdir(bamPath)
+for file in files:
+    if file.endswith('.bam'):
+        bamInput.append(os.path.join(bamPath, file)) 
+
+#You can go to the UCSC website to download the latest versions of the human reference genome hg38 and hg19 as compressed files and unzip them
+genome_reference='/path/to/human_genome_reference'
+
+outputdir='path/to/output/'
+
+BamToVcf(
+            bamInput=bamInput,
+            genome_reference=genome_reference,
+            outputdir=outputdir,
+            threads=None
+			)
+
+```
+
+
+- Example Usage **(runMutation)**
+
+```Python
+from cfDNAEE import *
+
+#You can find the runMutation.R scripts in the /cfDNAFE/scripts/
+pathToRunMutation='/path/to/cfDNAFE/scripts/runMutation.R'
+vcfPath=['path/to/vcf'1, 'path/to/vcf2']
 outputdir='path/to/output/'
 ID=['EGA5093','EGA5094']
 runMutation(
-       pathToRunMutation=pathToRunMutation,
-	   vcfInput=vcfInput,
-	   outputdir=outputdir,
-	   id=ID, 
-	   threads=None,
+		   pathToRunMutation=pathToRunMutation,
+		   vcfInput=vcfInput,
+		   outputdir=outputdir,
+		   id=ID
 )
 ```
 
 - Detailed parameters
 
 ```
+#BamToVcf
+ bamInput: list, input .bam files
+ outputdir: str, output result folder, None means the same folder as input files.
+ genome_reference: str, Human reference genome storage path, input .fa or fa.gz file.
+ baseQ: int, (default 30) skip bases with baseQ/BAQ smaller than INT
+ mapQ: int, (default 60) skip alignments with mapQ smaller than INT
+ threads: int (default None) Whether to use multithreading
+
+
+#runMutation
 pathToRunMutation: str, /path/to/RunMutation.R.
 vcfInput: str, Path to .vcf files.
 outputdir: str, output result folder, None means the same folder as input files.
@@ -509,6 +634,79 @@ threads: int (default None) Whether to use multithreading
 
 ```
 output_folders/
-├──EGA5093_MutationSignature.txt
-├──EGA5094_MutationSignature.txt
+├──EGA5093.signatures
+├──EGA5094.signatures
 ```
+
+## Section 8: UXM fragment-level
+**UXM fragment-level**: Each fragment was annotated as U (mostly unmethylated), M (mostly methylated) or X (mixed) depending on the number of methylated and unmethylated CpGs64. We then calculated, for each genomic region (marker) and across all cell types, the proportion of [U/X/M](https://www.nature.com/articles/s41586-022-05580-6) fragments with at least k CpGs.
+
+cfDNAFE provide a function **runMeth** to calculate the UXM fragment-level. We collect the top 25 differentially unmethylated regions for each cell type comprise a human cell-type-specific methylation atlas in **/cfDNAFE/data/MethMark/**. And cfDNAFE allows users to use custom disease-specific or tissue-specific marks, which requires that the mark contains the chromosome, the start position of the region, the end position of the region and file names ends with **.bed** file
+
+
+- Example Usage  
+
+```Python
+from cfDNAFE import *
+import os 
+
+#You can get bamInput by simply entering the path where the bam file is stored, as Lines 5 through 10
+bamPath='/path/to/sotred_bamfile/'
+bamInput=[]
+files=os.listdir(bamPath)
+for file in files:
+    if file.endswith('.bam'):
+        bamInput.append(os.path.join(bamPath, file)) 
+
+#If you do not have  disease-specific or tissue-specific marks, you can find the cell-type-specific methylation mark in /cfDNAFE/data/MethMark/
+markInput='/path/to/cfDNAFE/data/MethMark/Markers.U250.hg38.bed'
+
+outputdir='path/to/output/'
+
+runMeth(
+            bamInput=bamInput,
+            markInput=markInput,
+            outputdir=outputdir,
+            threads=None
+			)
+
+```
+
+
+
+
+- Detailed parameters
+
+```
+bamInput: list, input .bam files.
+markInput: str, regions of mark file. including chrom start end.
+outputdir: str, output result folder, None means the same folder as input files.
+mapQuality: int, Min fragment quality. default:30
+minCpG: int, Min fragment CpG number. defalut:3
+methyThreshold: float, thresholds of more than or equal to T% methylated CpGs for most methylated reads. defalut:0.75
+unmethyThreshold: float, thresholds of less than or equal to T% methylated CpGs for most unmethylated reads. default:0.25
+threads: int (default None) Whether to use multithreading
+
+
+```
+
+- Output Folder Arrangement
+
+```
+output_folders/
+├── sample1.UXM.tsv
+├── sample2.UXM.tsv
+```
+
+
+
+
+## Authors
+
+* **wx Cui** - *Thesis code writing work* [Central South University](https://cse.csu.edu.cn/)
+* **xq Peng**- * Ideas provided and paper writing* [Central South University](https://life.csu.edu.cn/jsxx.jsp?urltype=news.NewsContentUrl&wbtreeid=1815&wbnewsid=3625)
+
+
+## Version update
+
+* **cfDNAFE v0.1.0** - * News version 0.1.0, 2023.04.01 The first version.* 

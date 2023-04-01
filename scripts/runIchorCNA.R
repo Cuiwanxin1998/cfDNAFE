@@ -58,7 +58,6 @@ option_list <- list(
 )
 parseobj <- OptionParser(option_list=option_list)
 opt <- parse_args(parseobj)
-print(opt)
 options(scipen=0, stringsAsFactors=F)
 
 library(HMMcopy)
@@ -125,8 +124,8 @@ if (!is.null(libdir) && libdir != "None"){
 }
 
 ## load seqinfo 
-#seqinfo <- getSeqInfo(genomeBuild, genomeStyle)
-seqinfo <- NULL
+seqinfo <- getSeqInfo(genomeBuild, genomeStyle)
+
 if (substr(tumour_file,nchar(tumour_file)-2,nchar(tumour_file)) == "wig") {
   wigFiles <- data.frame(cbind(patientID, tumour_file))
 } else {
