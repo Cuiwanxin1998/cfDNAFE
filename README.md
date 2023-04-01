@@ -5,7 +5,7 @@
     * [Section 1.1: System requirement](#section-11-system-requirement)
     * [Section 1.2: Create environment and Install Dependencies](#section-12-create-environment-and-install-dependencies)
 * [Section 2: Bam File Data Processing (Function:runBamprocess)](#section-2-bam-file-data-processing)
-* [Section 3: Fragment Size Ratrio (FSR) and Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD) (Function: runFSR/runFSC/runFSD) ](#section-3-fragment-size-ratio-and-fsr-fragment-size-coverage-fsc--and-fragment-size-distribution-fsd)
+* [Section 3: Fragment Size Ratrio (FSR) and Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD) (Function: runFSR/runFSC/runFSD) ](#section-3-fragment-size-ratio-fsr-and-fragment-size-coverage-fsc--and-fragment-size-distribution-fsd)
 * [Section 4: Windows protection score (WPS) (Function:runWPS) ](#section-4-windows-protection-score-wps)
 * [Section 5: Orientation-aware cfDNA fragmentation (OCF) (Function:runOCF)](#section-5-orientation-aware-cfdna-fragmentation-ocf)
 * [Section 6: Copy Number variations(CNV)(Function:runCNV) ](#section-6-copy-number-variations-cnv)
