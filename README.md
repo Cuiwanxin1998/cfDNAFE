@@ -695,9 +695,9 @@ output_folders/
 
 
 ## Authors
+* **xq Peng**- [Central South University](https://life.csu.edu.cn/jsxx.jsp?urltype=news.NewsContentUrl&wbtreeid=1815&wbnewsid=3625)
+* **wx Cui** -  [Central South University](https://cse.csu.edu.cn/)
 
-* **wx Cui** - *Thesis code writing work* [Central South University](https://cse.csu.edu.cn/)
-* **xq Peng**- *Ideas provided and paper writing* [Central South University](https://life.csu.edu.cn/jsxx.jsp?urltype=news.NewsContentUrl&wbtreeid=1815&wbnewsid=3625)
 
 
 ## Version update

@@ -221,6 +221,8 @@ def bam_process(bamInput,
         bedWrite.write(tmp_str)
         ref_seq1 = genome.fetch(read1.reference_name, rstart - 3, rstart).upper()
         ref_seq2 = genome.fetch(read2.reference_name, rend, rend + 3).upper()
+        if read1.reference_name == 'chrX' or read1.reference_name == 'chrY':
+            continue
         End_motif = get_End_motif(End_motif, forward_end3, forward_end3)
         try:
             Breakpoint_motif = get_Breakpoint_motif(Breakpoint_motif, ref_seq1 + forward_end5[0:3],
