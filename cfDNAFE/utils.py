@@ -221,8 +221,6 @@ def bam_process(bamInput,
         bedWrite.write(tmp_str)
         ref_seq1 = genome.fetch(read1.reference_name, rstart - 3, rstart).upper()
         ref_seq2 = genome.fetch(read2.reference_name, rend, rend + 3).upper()
-        if read1.reference_name == 'chrX' or read1.reference_name == 'chrY':
-            continue
         End_motif = get_End_motif(End_motif, forward_end3, forward_end3)
         try:
             Breakpoint_motif = get_Breakpoint_motif(Breakpoint_motif, ref_seq1 + forward_end5[0:3],
@@ -363,14 +361,14 @@ def calc_FSR(bedgzInput, binInput, windows, outputfile):
             if np.std(combine_totals) == 0:
                 step += 50
                 start += 50
-                temp_str = chrom[step] + '\t' + str(bin_start) + '\t' + str(bin_end) + '\t' + ','.join(
+                temp_str = chrom[step] + '\t' + str(bin_start) + '\t' + str(bin_end) + '\t' + '\t'.join(
                     map(str, tmp_array)) + '\n'
                 FSRfile.write(temp_str)
                 continue
             tmp_array[0] = np.sum(combine_shorts) / np.sum(combine_totals)
             tmp_array[1] = np.sum(combine_intermediates) / np.sum(combine_totals)
             tmp_array[2] = np.sum(combine_longs) / np.sum(combine_totals)
-            temp_str = chrom[step] + '\t' + str(bin_start) + '\t' + str(bin_end) + '\t' + ','.join(
+            temp_str = chrom[step] + '\t' + str(bin_start) + '\t' + str(bin_end) + '\t' + '\t'.join(
                 map(str, tmp_array)) + '\n'
             FSRfile.write(temp_str)
             step += 50
@@ -721,8 +719,10 @@ def calc_OCF(bedgzInput, ocrInput, outputdir):
 def calc_UXM(bamInput, markInput, outputFile, mapQuality, minCpG, methyThreshold, unmethyThreshold):
     bai = bamInput + '.bai'
     if not os.path.exists(bai):
-        message = "Index file " + bai + " do not exist!" + '  Please use samtools to sort!'
-        raise commonError(message)
+        pysam.sort("-o", bamInput, bamInput)
+        pysam.index(bamInput)
+        message = "Index file " + bai + " do not exist!" + '  cfDNAFE use samtools to sort!'
+        print(message)
     input_file = pysam.Samfile(bamInput)
     marks = pybedtools.BedTool(markInput)
     print("input file:", bamInput, markInput)

@@ -1,6 +1,5 @@
 from .Base import *
 from .utils import *
-from .readCounter import *
 from .Run_FSR import *
 from .Run_CNV import *
 from .Run_OCF import *

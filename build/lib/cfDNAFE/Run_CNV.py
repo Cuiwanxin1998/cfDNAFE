@@ -12,12 +12,14 @@ class runCNV(Base):
     def __init__(
             self,
             pathTorunIchorCNA=None,
-            wig=None,
+            bamInput=None,
+            window_size=1000000,
+            quality=20,
+            chromosome=None,
             ploidy="'c(2)'",
             normal="'c(0.95, 0.99, 0.995, 0.999)'",
             maxCN=3,
             gcWig=None,
-            ID=None,
             mapWig=None,
             centromere=None,
             normalPanel=None,
@@ -39,6 +41,11 @@ class runCNV(Base):
                 runCNV(pathToreadCounter=None, bamInput=None, outputdir=None, window_size=1000000, quality=20, chromosome=None, threads=None,)
                 {P}arameters:
                     pathTorunIchorCNA: str, /path/to/ichorCNA/scripts/runIchorCNA.R.
+                    bamInput: list, input .bam files
+                    chromosome: str, Chromosomes to be processed(default 'chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22').
+                    outputdir: str, output result folder, None means the same folder as input files.
+                    window_size: int, (default 1000000). input window size.
+                    quality: int, (default 20). remove reads with lower quality
                     wig: list, Path to tumor WIG file
                     ploidy: str, Initial tumour ploidy; can be more than one value if additional ploidy initializations are desired.
                     normal: str, Initial normal contamination; can be more than one value if additional normal initializations are desired.
@@ -65,8 +72,80 @@ class runCNV(Base):
 
                 """
         super(runCNV, self).__init__()
+
+        if bamInput is None:
+            raise commonError("Parameter bamInput must require. the input bam must be sorted")
+        else:
+            self.setInput("bamInput", bamInput)
+
+        if threads is not None:
+            self.setParam("threads", threads)
+            verbose = False
+        else:
+            self.setParam("threads", 1)
+            verbose = True
+        if not os.path.exists(outputdir):
+            os.mkdir(outputdir)
+        if outputdir is None:
+            self.setOutput(
+                "outputdir",
+                os.path.dirname(os.path.abspath(self.getInput("bamInput")[0])),
+            )
+        else:
+            self.setOutput("outputdir", outputdir)
+
+        wigPath = os.path.join(self.getOutput('outputdir'), 'Wig')
+        if not os.path.exists(wigPath):
+            os.mkdir(wigPath)
+        self.setOutput("wigOutput",
+                       [
+                           os.path.join(wigPath, self.getMaxFileNamePrefixV2(x))
+                           + '.wig'
+                           for x in self.getInput("bamInput")
+                       ])
+        if chromosome is None:
+            self.setParam('chromosome',
+                          'chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22')
+        else:
+            self.setParam('chromosome', chromosome)
+        self.setParam("window", window_size)
+        self.setParam('quality', quality)
+        multi_run_len = len(self.getInput("bamInput"))
+        cmd = []
+        for i in range(multi_run_len):
+            cmd.append(
+                self.cmdCreate(
+                    [
+                        'readCounter',
+                        "--window",
+                        self.getParam("window"),
+                        "--quality",
+                        self.getParam("quality"),
+                        "--chromosome",
+                        self.getParam('chromosome'),
+                        self.getInput("bamInput")[i],
+                        '>' + self.getOutput("wigOutput")[i]
+                    ]
+                )
+            )
+
+        if verbose:
+            self.run(cmd)
+        else:
+            self.multiRun(args=cmd, func=None, nCore=maxCore(self.getParam("threads")))
+
+        wig = []
+        ID = []
+        files = os.listdir(wigPath)
+        for file in files:
+            if file.endswith('.wig'):
+                wig.append(os.path.join(wigPath, file))
+                ID.append(os.path.splitext(file)[0])
+
+
         if pathTorunIchorCNA is None:
             commonError("Path to R file runIchorCNA; Required!")
+
 
         if len(wig) != len(ID):
             commonError(

@@ -361,14 +361,14 @@ def calc_FSR(bedgzInput, binInput, windows, outputfile):
             if np.std(combine_totals) == 0:
                 step += 50
                 start += 50
-                temp_str = chrom[step] + '\t' + str(bin_start) + '\t' + str(bin_end) + '\t' + ','.join(
+                temp_str = chrom[step] + '\t' + str(bin_start) + '\t' + str(bin_end) + '\t' + '\t'.join(
                     map(str, tmp_array)) + '\n'
                 FSRfile.write(temp_str)
                 continue
             tmp_array[0] = np.sum(combine_shorts) / np.sum(combine_totals)
             tmp_array[1] = np.sum(combine_intermediates) / np.sum(combine_totals)
             tmp_array[2] = np.sum(combine_longs) / np.sum(combine_totals)
-            temp_str = chrom[step] + '\t' + str(bin_start) + '\t' + str(bin_end) + '\t' + ','.join(
+            temp_str = chrom[step] + '\t' + str(bin_start) + '\t' + str(bin_end) + '\t' + '\t'.join(
                 map(str, tmp_array)) + '\n'
             FSRfile.write(temp_str)
             step += 50
@@ -719,8 +719,10 @@ def calc_OCF(bedgzInput, ocrInput, outputdir):
 def calc_UXM(bamInput, markInput, outputFile, mapQuality, minCpG, methyThreshold, unmethyThreshold):
     bai = bamInput + '.bai'
     if not os.path.exists(bai):
-        message = "Index file " + bai + " do not exist!" + '  Please use samtools to sort!'
-        raise commonError(message)
+        pysam.sort("-o", bamInput, bamInput)
+        pysam.index(bamInput)
+        message = "Index file " + bai + " do not exist!" + '  cfDNAFE use samtools to sort!'
+        print(message)
     input_file = pysam.Samfile(bamInput)
     marks = pybedtools.BedTool(markInput)
     print("input file:", bamInput, markInput)

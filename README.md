@@ -64,15 +64,15 @@ install_github("broadinstitute/ichorCNA")
 #Option2
 #Checkout the latest release of ichorCNA from GitHub
 git clone git@github.com:broadinstitute/ichorCNA.git  
- ##install from CRAN
- install.packages("plyr") 
- ## install packages from
- source("https://bioconductor.org/biocLite.R")
- BiocManager::install("HMMcopy")  
- BiocManager::install("GenomeInfoDb")  
- BiocManager::install("GenomicRanges")  
+##install from CRAN
+install.packages("plyr") 
+## install packages from
+source("https://bioconductor.org/biocLite.R")
+BiocManager::install("HMMcopy")  
+BiocManager::install("GenomeInfoDb")  
+BiocManager::install("GenomicRanges")  
 ## from the command line and in the directory where ichorCNA github was cloned.
- R CMD INSTALL ichorCNA   
+R CMD INSTALL ichorCNA   
 
 #How to download MutationalPattern
 install.packages("BiocManager")
@@ -439,12 +439,11 @@ output_folders/
 **CNV**: The Copy Number Variation (CNV) profile was calculated using ichorCNA as reported by [Wan *et al.*](https://bmccancer.biomedcentral.com/articles/10.1186/s12885-019-6003-8). First, the genome of each sample was divided into 1 MB bins. For each bin, the depth after bin-level GC correction was used by a Hidden Markov Model (HMM) to compare against the software baseline. Then, we calculated the log2 ratio for the CNV score.
 
 There are 2 main steps in this part, generating read count coverage information using readCounter from the HMMcopy suite.
-Copy number analysis using ichorCNA, you can find in the **/cfDNAFE/scripts/**
-Users can find the [input parameters](https://github.com/broadinstitute/ichorCNA/tree/master/inst/extdata). In the output results, we can find the log2 transformed CNV from the fourth column in the **sample.cna.seg** file.
+Copy number analysis using ichorCNA, you can find in the **/cfDNAFE/scripts/**. 
 
-- Example Usage **(Fisrt Step: Generating read count)**
+- Example Usage **(Second Step: Copy Number Analysis)**
 
-```Python
+```
 from cfDNAFEE import *
 import os
 
@@ -455,31 +454,7 @@ files=os.listdir(bamPath)
 for file in files:
     if file.endswith('.bam'):
         bamInput.append(os.path.join(bamPath, file)) 
-		
-#generating read count coverage information
-outputdir='/path/to/outputdir'
-readCounter(
-		bamInput=bamInput,
-		outputdir=outputdir
-)
-```
-- Example Usage **(Second Step: Copy Number Analysis)**
-
-```
-from cfDNAFE import *
-import os
-
-#You can get wigInput and ID by simply entering the path where the bam file is stored, as Lines 6 through 13
-#You can get the .wig file by running the function readCounter, the readCounter have been introduced in the section6
-wigPath='/path/to/sotred_bamfile/'
-wigInput=[]
-ID=[]
-files=os.listdir(wigPath)
-for file in files:
-    if file.endswith('.wig'):
-        wigInput.append(os.path.join(wigPath, file)) 
-		ID.append(os.path.splitext(file)[0] )
-
+        
 #You can find the runIchorCNA.R scripts in the /cfDNAFE/scripts
 pathTorunIchorCNA='/path/to/runIchorCNA.R'
 
@@ -489,11 +464,13 @@ mapWig='/path/to/cfDNAFE/data/CNVdependecy/map_hg38_1000kb.wig'
 
 #You can find the centromere in /cfDNAFE/data/CNVdependecy
 centromere='/path/to/cfDNAFE/data/CNVdependecy/GRCh38.GCA_000001405.2_centromere_acen.txt'
+
+outputdir='path/to/output/'
 runCNV(
-        pathTorunIchorCNA=pathTorunIchorCNA,
-		wig=wigInput,
+              pathTorunIchorCNA=pathTorunIchorCNA,
+              bamInput = bamInput,
+		outputdir = outputdir,
 		gcWig=gcWig,
-		ID=ID,
 		mapWig=mapWig,
 		centromere=centromere,
 		threads=NONE
@@ -503,18 +480,14 @@ runCNV(
 - Detailed parameters
 
 ```
-#readCounter
-pathToHreadCounter: str, /path/to/HMMcopy/bin/readCounter.
-bamInput: str, regions of blacklist file. download from this site https://github.com/Boyle-Lab/Blacklist/.
-outputdir: str, output result folder, None means the same folder as input files.
-window_size: int, (default 1000000). input window size.
-quality: int, (default 20). remove reads with lower quality
-chromosome: str, Chromosomes to be processed(default 'chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22').
-threads: int (default None) Whether to use multithreading
-
 #runCNV
 pathTorunIchorCNA: str, /path/to/ichorCNA/scripts/runIchorCNA.R.
-wig: list, Path to tumor WIG file
+bamInput: list, input .bam files
+chromosome: str, Chromosomes to be processed(default 'chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22').
+outputdir: str, output result folder, None means the same folder as input files.
+window_size: int, (default 1000000). input window size.
+quality: int, (default 20). remove reads with lower quality.
+outputdir: str, output result folder, None means the same folder as input files.
 ploidy: str, Initial tumour ploidy; can be more than one value if additional ploidy initializations are desired.
 normal: str, Initial normal contamination; can be more than one value if additional normal initializations are desired.
 maxCN: int, (default 3). Total clonal CN states.
@@ -550,9 +523,7 @@ output_folders/
 ## Section 7: Mutation Signature
 **Mutation signature**: Each mutational process is thought to leave its own characteristic mark on the genome. For example, AID/APOBEC activity can specifically cause C > T and C > G substitutions at TpCpA and TpCpT sites (of which the underlined nucleotide is mutated.  Thus, patterns of somatic mutations can serve as readout of the mutational processes that have been active and as proxies for the molecular perturbations in a tumour. These [mutational signatures](https://doi.org/10.1038/nature12477) are characterized by a specific contribution of 96 base substitution types with a certain sequence context.
 
-If you do not have vcf files, cfDNAFE provide a function **BamToVcf** to help user convert bam files to vcf files, you can filter out fragments with lower alignment and base quality.
 
-- Example Usage **(run BamToVcf)**
 
 ```Python
 from cfDNAFE import *
@@ -584,16 +555,27 @@ BamToVcf(
 - Example Usage **(runMutation)**
 
 ```Python
-from cfDNAEE import *
+from cfDNAFE import *
+import os 
+
+#You can get bamInput by simply entering the path where the bam file is stored, as Lines 5 through 10
+bamPath='/path/to/sotred_bamfile/'
+bamInput=[]
+files=os.listdir(bamPath)
+for file in files:
+    if file.endswith('.bam'):
+        bamInput.append(os.path.join(bamPath, file)) 
+
+#You can go to the UCSC website to download the latest versions of the human reference genome hg38 and hg19 as compressed files and unzip them
+genome_reference='/path/to/human_genome_reference'
+
+outputdir='path/to/output/'
 
 #You can find the runMutation.R scripts in the /cfDNAFE/scripts/
-pathToRunMutation='/path/to/cfDNAFE/scripts/runMutation.R'
-vcfPath=['path/to/vcf'1, 'path/to/vcf2']
-outputdir='path/to/output/'
-ID=['EGA5093','EGA5094']
 runMutation(
 		   pathToRunMutation=pathToRunMutation,
-		   vcfInput=vcfInput,
+		   bamInput=bamInput,
+		   genome_reference=genome_reference,
 		   outputdir=outputdir,
 		   id=ID
 )
@@ -602,33 +584,24 @@ runMutation(
 - Detailed parameters
 
 ```
-#BamToVcf
- bamInput: list, input .bam files
- outputdir: str, output result folder, None means the same folder as input files.
- genome_reference: str, Human reference genome storage path, input .fa or fa.gz file.
- baseQ: int, (default 30) skip bases with baseQ/BAQ smaller than INT
- mapQ: int, (default 60) skip alignments with mapQ smaller than INT
- threads: int (default None) Whether to use multithreading
-
-
 #runMutation
 pathToRunMutation: str, /path/to/RunMutation.R.
-vcfInput: str, Path to .vcf files.
+bamInput: list, input .bam files
+ID:str, group id.
+refGenome: str, human genome reference 'hg19' or 'hg38'.
 outputdir: str, output result folder, None means the same folder as input files.
-id: list, Files ID
-cutoff: int, a cosine similarity of more than cutoff with an existing COSMIC signature
-refGenome: str, human genome reference 'hg19' or 'hg38'
+genome_reference: str, Human reference genome storage path, input .fa or fa.gz file.
+baseQ: int, (default 30) skip bases with baseQ/BAQ smaller than INT
+mapQ: int, (default 60) skip alignments with mapQ smaller than INT
 threads: int (default None) Whether to use multithreading
-
-
 ```
 
 - Output Folder Arrangement
 
 ```
 output_folders/
-├──EGA5093.signatures
-├──EGA5094.signatures
+├──sample.signatures
+├──sample.96.mutation.profle
 ```
 
 ## Section 8: UXM fragment-level
