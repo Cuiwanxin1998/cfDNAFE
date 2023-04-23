@@ -34,6 +34,7 @@ option_list <- list(
   make_option(c("--ploidy"), type="character", default="2", help = "Initial tumour ploidy; can be more than one value if additional ploidy initializations are desired. Default: [%default]"),
   make_option(c("--maxCN"), type="numeric", default=7, help = "Total clonal CN states. Default: [%default]"),
   make_option(c("--estimateNormal"), type="logical", default=TRUE, help = "Estimate normal. Default: [%default]"),
+  make_option(c("--seqinfo"), type="character", help = "Estimate normal. Default: [%default]"),
   make_option(c("--estimateScPrevalence"), type="logical", default=TRUE, help = "Estimate subclonal prevalence. Default: [%default]"),
   make_option(c("--estimatePloidy"), type="logical", default=TRUE, help = "Estimate tumour ploidy. Default: [%default]"),
   make_option(c("--maxFracCNASubclone"), type="numeric", default=0.7, help="Exclude solutions with fraction of subclonal events greater than this value. Default: [%default]"),
@@ -44,7 +45,7 @@ option_list <- list(
   make_option(c("--chrTrain"), type="character", default="c(1:22)", help = "Specify chromosomes to estimate params. Default: [%default]"),
   make_option(c("--chrs"), type="character", default="c(1:22,\"X\")", help = "Specify chromosomes to analyze. Default: [%default]"),
   make_option(c("--genomeBuild"), type="character", default="hg19", help="Geome build. Default: [%default]"),
-  make_option(c("--genomeStyle"), type = "character", default = "NCBI", help = "NCBI or UCSC chromosome naming convention; use UCSC if desired output is to have \"chr\" string. [Default: %default]"),
+  make_option(c("--genomeStyle"), type = "character", default = "UCSC", help = "NCBI or UCSC chromosome naming convention; use UCSC if desired output is to have \"chr\" string. [Default: %default]"),
   make_option(c("--normalizeMaleX"), type="logical", default=TRUE, help = "If male, then normalize chrX by median. Default: [%default]"),
   make_option(c("--minTumFracToCorrect"), type="numeric", default=0.1, help = "Tumor-fraction correction of bin and segment-level CNA if sample has minimum estimated tumor fraction. [Default: %default]"), 
   make_option(c("--fracReadsInChrYForMale"), type="numeric", default=0.001, help = "Threshold for fraction of reads in chrY to assign as male. Default: [%default]"),
@@ -90,6 +91,7 @@ altFracThreshold <- opt$altFracThreshold
 ploidy <- eval(parse(text = opt$ploidy))
 coverage <- opt$coverage
 maxCN <- opt$maxCN
+seqinfo <- opt$seqinfo
 txnE <- opt$txnE
 txnStrength <- opt$txnStrength
 normalizeMaleX <- as.logical(opt$normalizeMaleX)
@@ -124,7 +126,7 @@ if (!is.null(libdir) && libdir != "None"){
 }
 
 ## load seqinfo 
-seqinfo <- getSeqInfo(genomeBuild, genomeStyle)
+seqinfo <- readRDS(seqinfo)
 
 if (substr(tumour_file,nchar(tumour_file)-2,nchar(tumour_file)) == "wig") {
   wigFiles <- data.frame(cbind(patientID, tumour_file))
