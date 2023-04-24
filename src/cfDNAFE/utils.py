@@ -351,8 +351,7 @@ def calc_FSR(bedgzInput, binInput, windows, continue_N, outputfile):
             else:
                 shorts_data.append(shorts / totals)
                 intermediates_data.append(intermediates / totals)
-                longs_data.append(longs / totals)
-            print(shorts)
+                longs_data.append(longs / totals) 
     start = 0
     step = 0
     FSRfile = open(outputfile, 'w')
