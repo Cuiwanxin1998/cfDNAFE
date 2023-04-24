@@ -34,7 +34,7 @@ def main():
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--bedgzPath',  required=True, type=str,
-            help='path to bedgz file')
+            help='this is a file folder, path to bedgz file')
     parser.add_argument('-ocr', '--ocrInput', type=str,
             help="regions of open chromosome file")
     parser.add_argument('-o', '--output', type=str,

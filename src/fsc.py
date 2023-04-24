@@ -39,7 +39,7 @@ def main():
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--bedgzPath', '-p', required=True, type=str,
-            help='path to bedgz file')
+            help='this is a file folder, path to bedgz file')
     parser.add_argument('--binInput', '-b',  type=str,
             help="regions of blacklist file.")
     parser.add_argument('--windows', '-w',  default=100000, type=int,

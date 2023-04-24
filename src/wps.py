@@ -18,7 +18,7 @@ def main():
 
             # You can get ocrInput in /cfDNAFE/data/OpenChromatinRegion/
     if args.tsvInput == None:
-        tsvInput = op.join(dpath, 'data/TranscriptAnno/transcriptAnno-hg38.tsv')
+        tsvInput = op.join(dpath, 'data/TranscriptAnno/transcriptAnno-hg38-1kb.tsv')
     else:
         tsvInput = args.tsvInput
 
@@ -48,7 +48,7 @@ def main():
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--bedgzPath', required=True, type=str,
-            help='path to bedgz file')
+            help='this is a file folder, path to bedgz file')
     parser.add_argument('-tsv', '--tsvInput',  type=str,
             help="regions of open chromosome file")
     parser.add_argument('-o', '--output', type=str,

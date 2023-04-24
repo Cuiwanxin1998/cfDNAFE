@@ -44,7 +44,7 @@ def main():
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--bamPath', required=True, type=str,
-                        help='path to bam file')
+                        help='this is a file folder, path to bam file')
     parser.add_argument('-m', '--markInput', type=str,
                         help="regions of mark file, including chrom start end.")
     parser.add_argument('-o', '--outputdir', type=str,

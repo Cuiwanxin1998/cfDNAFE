@@ -44,7 +44,7 @@ def main():
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--bamPath',  required=True, type=str,
-            help='path to bam file')
+            help='this is a file folder, path to bam file')
     parser.add_argument('-g', '--genome_reference', type=str, required=True,
             help="genome reference .fa file")
     parser.add_argument('-o', '--outputdir',  type=str,
@@ -53,7 +53,7 @@ def parse_args():
             help='human genome reference hg19 or hg38')
     parser.add_argument('-mq', '--mapQ',  type=int, default=60,
             help='skip bases with baseQ/BAQ smaller than INT')
-    parser.add_argument( '-bq', '--baseQ',type=int, default=30,
+    parser.add_argument('-bq', '--baseQ',type=int, default=30,
             help='skip alignments with mapQ smaller than INT')
     parser.add_argument('-id', '--id', type=str, default="test",
             help=' group id')

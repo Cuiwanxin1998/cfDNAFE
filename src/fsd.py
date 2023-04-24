@@ -28,7 +28,6 @@ def main():
     runFSD(
         bedgzInput=bedgzInput,
         armsInput=armsInput,
-
         outputdir=outputdir,
         threads=threads
     )
@@ -36,7 +35,7 @@ def main():
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--bedgzPath', '-p', required=True, type=str,
-            help='path to bedgz file')
+            help='this is a file folder, path to bedgz file')
     parser.add_argument('--armsInput', '-a', type=str,
             help="regions of chromosome arms file")
     parser.add_argument('--output', '-o', type=str,

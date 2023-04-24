@@ -30,7 +30,7 @@ def main():
     minlen = args.minLen
     maxlen = args.maxLen
     k_mer = args.k_mer
-    threads = args.threads 
+    threads = args.threads
     runBamProcess(
         bamInput=bamInput,
         blacklistInput=blacklistInput,
@@ -48,7 +48,7 @@ def main():
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--bamPath', required=True, type=str,
-            help='path to bamInput file')
+            help='this is a file folder, path to bam file')
     parser.add_argument('-b', '--blacklist', type=str,
             help="regions of blacklist file")
     parser.add_argument('-g', '--genome_reference', required=True, type=str,
@@ -58,7 +58,7 @@ def parse_args():
     parser.add_argument('-c', '--chr',  type=list, default=['chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10','chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr18', 'chr19', 'chr20', 'chr21','chr22', 'chrX']
                         , help="Chromosomes to be processed")
     parser.add_argument('-f', '--fragFilter',  action='store_true',
-                        help='Whether filter fragment by length, only for paired data')
+                        help='Whether filter fragment by length')
     parser.add_argument('-minl', '--minLen',  type=int,
                         help='Min fragment length.')
     parser.add_argument('-maxl', '--maxLen',  type=int,
