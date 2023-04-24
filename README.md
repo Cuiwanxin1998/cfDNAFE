@@ -182,7 +182,7 @@ There are 2 main steps in this part, generating read count coverage information 
 - Example Usage 
 
 ```bash
-cfDNAFE ocf -p /path/to/bamfile -o output_folders/
+cfDNAFE cnv -p /path/to/bamfile -o output_folders/
 ```
 
 - Output Folder Arrangement
