@@ -4,6 +4,7 @@
 * [Section 1: Installation Tutorial](#section-1-installation-tutorial)
     * [Section 1.1: System requirement](#section-11-system-requirement)
     * [Section 1.2: Create environment and Install Dependencies](#section-12-create-environment-and-install-dependencies)
+    * [Section 1.3: Use cfDNAFE](#section-13-use-cfDNAFE)
 * [Section 2: Bam Data Processing (Function:runBamprocess)](#section-2-bam-data-processing)
 * [Section 3: Fragment Size Ratrio (FSR) , Fragment Size Coverage (FSC) and Fragment Size Distribution (FSD) (Function: runFSR/runFSC/runFSD) ](#section-3-fragment-size-ratio-fsr-fragment-size-coverage-fsc--and-fragment-size-distribution-fsd)
 * [Section 4: Windows protection score (WPS) (Function:runWPS) ](#section-4-windows-protection-score-wps)
@@ -43,7 +44,7 @@ Since many whole genome sequencing(WGS) or whole genome bisulfite sequencing(WGB
 We recommend using [conda/Anaconda](https://www.anaconda.com/) and create a virtual environment to manage all the dependencies.
 
 ### Section 1.2: Create environment and Install Dependencies
-First, run the following command. The environment will be created and all the dependencies as well as the latest cfDNAFE will be installed. 
+Running the following command. The environment will be created and all the dependencies as well as the latest cfDNAFE will be installed. 
 
 ```bash
 #download cfDNAFE from github(From cfDNAFE you can get the files necessary for the software to run)
@@ -58,12 +59,42 @@ Rscript ./scripts/install_Rpackages.R
 export PATH=${PATH}:$PWD
 ```
 
+### Section 1.3: Use cfDNAFE
+After the above steps, the user can use the cfDNAFE using the following command.
+```bash
+$ cfDNAFE
+A tool for extracting cfDNA feature, version 0.1.0
+Usage: cfDNAFE <command> [<args>]
+run cfDNAFE <command> -h for more information
+Optional commands:
+bam, extracting end motif, breakpoint motif and Motif-Diversity Score
+fsc, extracting fragment size coverage
+fsd, extracting fragment size distribution
+fsr, extracting fragment size ratio
+cnv, extracting copy number variations
+wps, extracting window protect score
+ocf, extracting orientation-aware cfDNA fragmentation
+mutation, extracting 96 single base substitution mutation (SBS) profile and a mutation signature profile
+meth, extracting UXM fragment-level
+
+```
+
+
 
 ## Section 2: Bam File Data Processing
 
 cfDNAFE mainly processes bam file data. This function input is the initial step of cfDNAFE, which mainly extracts the bed input files required by the following functions and Motif End, Breakpoint End, MDS.
 
 Human reference genome  can be obtained through [UCSC](https://genome.ucsc.edu/index.html), here we provide [GRCh37/hg19](https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/) and [GRCh38/hg38](https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/).
+
+- Detailed parameters
+
+```bash
+usage: bam [-h] -p BAMPATH [-b BLACKLIST] -g GENOME_REFERENCE [-o OUTPUT]
+           [-c CHR] [-f] [-minl MINLEN] [-maxl MAXLEN] [-k K_MER] [-t THREADS]
+
+```
+
 
 
 - Example Usage
@@ -94,7 +125,20 @@ output_folders/
 
 **FSD**:The FSD examined fragment length patterns at a high resolution by grouping cfDNA fragments into length bins of 5bp ranging from 65bp and 400bp and calculating the ratio of fragments in each bin at arm level for each chromosome. A total of 41 chromosome arms were examined.
 
-We provide 100kb window files for hg19 and hg38, you can find in **/cfDNAFE/data/ChormosomeBins/** and chromosome arms files for hg19 and hg38, you can find in **/cfDNAFE/data/ChormosomeArms/**.
+We provide 100kb window files for hg19 and hg38, you can find in **/cfDNAFE/data/ChormosomeBins/** and chromosome arms files for hg19 and hg38, you can find in **/cfDNAFE/data/ChormosomeArms/**. Here, we use hg38 as deafult.
+
+
+- Detailed parameters
+
+```bash
+usage: fsr [-h] -p BEDGZPATH [-b BININPUT] [-w WINDOWS] [-c CONTINUE_N]
+           [-o OUTPUT] [-t THREADS]
+		   
+usage: fsr [-h] -p BEDGZPATH [-b BININPUT] [-w WINDOWS] [-c CONTINUE_N]
+           [-o OUTPUT] [-t THREADS]
+		   
+usage: fsd [-h] -p BEDGZPATH [-a ARMSINPUT] [-o OUTPUT] [-t THREADS]
+```
 
 - Example Usage
 
@@ -126,6 +170,14 @@ We provide the downstream 1kb and 10kb of the TSS of each gene for hg19 and hg38
 
 Moreover, we will illustrate how to get gene bodies from gencode annotation files. Users can download gencode annotation files from [gencode database](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/), the commonly used files are [gencode.v19.annotation.gtf.gz](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_19/gencode.v19.annotation.gtf.gz) for hg19 and [gencode.v37.annotation.gtf.gz](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_37/gencode.v37.annotation.gtf.gz) for hg38. Here, we use transcriptAnno-hg38-1kb.tsv as deafult.
 
+- Detailed parameters
+
+```bash
+usage: wps [-h] -p BEDGZPATH [-tsv TSVINPUT] [-o OUTPUT] [-w {L,S}]
+           [-empty {True,False}] [-t THREADS]
+```
+
+
 - Example Usage
 
 ```bash
@@ -147,7 +199,13 @@ output_folders/
 ## Section 5: Orientation-aware cfDNA fragmentation (OCF)
 **OCF**: To explore the potential in inferring the relative contributions of various tissues in the plasma DNA pool, [Sun *et al.*](https://genome.cshlp.org/content/29/3/418.full) developed a novel approach to measure the differential phasing of upstream (U) and downstream (D) fragment ends in tissue-specific open chromatin regions. They called this strategy orientation-aware cfDNA fragmentation (OCF) analysis. OCF values are based on the differences in U and D end signals in the center of the relevant open chromatin regions. For tissues that contributed DNA into plasma, one would expect much cfDNA fragmentation to have occurred at the nucleosome-depleted region in the center of the corresponding tissue-specific open chromatin regions. In such a region, U and D ends exhibited the highest read densities (i.e., peaks) at ∼60 bp from the center, whereas the peaks for U and D ends were located on the right- and left-hand sides, respectively. Conversely, this pattern would not be expected for tissue-specific open chromatin regions where the corresponding tissue did not contribute DNA into the plasma. Thus measured the differences of U and D end signals in 20-bp windows around the peaks in the tissue-specific open chromatin regions as the OCF value for the corresponding tissue.
 
-We provide tissue specific open chromatin regions for seven tissues, you can find in **/cfDNAFE/data/OpenChromatinRegion/**
+We provide tissue specific open chromatin regions for seven tissues, you can find in **/cfDNAFE/data/OpenChromatinRegion/**.
+
+- Detailed parameters
+
+```bash
+usage: ocf [-h] -p BEDGZPATH [-ocr OCRINPUT] [-o OUTPUT] [-t THREADS]
+```
 
 
 - Example Usage
@@ -179,10 +237,24 @@ output_folders/
 
 There are 2 main steps in this part, generating read count coverage information using readCounter from the HMMcopy suite.
 
+- Detailed parameters
+
+```bash
+usage: cnv [-h] -p BAMPATH [-c CHROMOSOME] [-o OUTPUTDIR] [-w WINDOW_SIZE]
+           [-q QUALITY] [-ploidy PLOIDY] [-normal NORMAL] [-maxCN MAXCN]
+           [-gcWig GCWIG] [-mapWig MAPWIG] [-centromere CENTROMERE]
+           [-includeHOMD INCLUDEHOMD] [-chrs CHRS] [-chrTrain CHRTRAIN]
+           [-normalPanel NORMALPANEL] [-estimateNormal ESTIMATENORMAL]
+           [-estimatePloidy ESTIMATEPLOIDY]
+           [-estimateScPrevalence ESTIMATESCPREVALENCE] [-scStates SCSTATES]
+           [-txnE TXNE] [-txnStrength TXNSTRENGTH] [-seqinfo {hg38,hg19}]
+           [-t THREADS]
+```
+
 - Example Usage 
 
 ```bash
-cfDNAFE ocf -p /path/to/bamfile -o output_folders/
+cfDNAFE cnv -p /path/to/bamfile -o output_folders/
 ```
 
 - Output Folder Arrangement
@@ -195,6 +267,14 @@ output_folders/
 
 ## Section 7: Mutation Signature
 **Mutation signature**: Each mutational process is thought to leave its own characteristic mark on the genome. For example, AID/APOBEC activity can specifically cause C > T and C > G substitutions at TpCpA and TpCpT sites (of which the underlined nucleotide is mutated.  Thus, patterns of somatic mutations can serve as readout of the mutational processes that have been active and as proxies for the molecular perturbations in a tumour. These [mutational signatures](https://doi.org/10.1038/nature12477) are characterized by a specific contribution of 96 base substitution types with a certain sequence context.
+
+
+- Detailed parameters
+
+```bash
+usage: mutation [-h] -p BAMPATH -g GENOME_REFERENCE [-o OUTPUTDIR]
+                [-r {hg19,hg38}] [-mq MAPQ] [-bq BASEQ] [-id ID] [-t THREADS]
+```
 
 - Example Usage  
 
@@ -215,6 +295,15 @@ output_folders/
 **UXM fragment-level**: Each fragment was annotated as U (mostly unmethylated), M (mostly methylated) or X (mixed) depending on the number of methylated and unmethylated CpGs64. We then calculated, for each genomic region (marker) and across all cell types, the proportion of [U/X/M](https://www.nature.com/articles/s41586-022-05580-6) fragments with at least k CpGs.
 
 cfDNAFE provide a function **runMeth** to calculate the UXM fragment-level. We collect the top 25 differentially unmethylated regions for each cell type comprise a human cell-type-specific methylation atlas in **/cfDNAFE/data/MethMark/**. And cfDNAFE allows users to use custom disease-specific or tissue-specific marks, which requires that the mark contains the chromosome, the start position of the region, the end position of the region and file names ends with **.bed** file
+
+- Detailed parameters
+
+```bash
+usage: meth [-h] -p BAMPATH [-m MARKINPUT] [-o OUTPUTDIR] [-mq MAPQUALITY]
+            [-mCpG MINCPG] [-mT METHYTHRESHOLD] [-umT UNMETHYTHRESHOLD]
+            [-t THREADS]
+```
+
 
 
 - Example Usage  
