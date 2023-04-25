@@ -38,17 +38,17 @@ def main():
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--bedgzPath', '-p', required=True, type=str,
+    parser.add_argument('-p', '--bedgzPath', required=True, type=str,
             help='this is a file folder, path to bedgz file')
-    parser.add_argument('--binInput', '-b',  type=str,
-            help="regions of blacklist file.")
-    parser.add_argument('--windows', '-w',  default=100000, type=int,
+    parser.add_argument('-b', '--binInput', type=str,
+            help="regions of chromosome N kb bin file")
+    parser.add_argument('-w', '--windows', default=100000, type=int,
             help="the window size.")
-    parser.add_argument('--continue_N', '-c',  default=50, type=int,
+    parser.add_argument('-c', '--continue_N',  default=50, type=int,
                         help="continue window number.")
-    parser.add_argument('--output', '-o', type=str,
+    parser.add_argument('-o', '--output', type=str,
             help='output result folder')
-    parser.add_argument('--threads', '-t', type=int, default=1,
+    parser.add_argument('-t', '--threads', type=int, default=1,
                         help='Whether to use multithreading')
     return parser.parse_args()
 
