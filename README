@@ -90,7 +90,7 @@ Human reference genome  can be obtained through [UCSC](https://genome.ucsc.edu/i
 - Detailed parameters
 
 ```bash
-usage: bam [-h] -p BAMPATH [-b BLACKLIST] -g GENOME_REFERENCE [-o OUTPUT]
+usage: bam [-h] -p BAMPATH [-b BLACKLIST] -g GENOME_REFERENCE [-o OUTPUT] [-m MAPQUALITY] 
            [-c CHR] [-f] [-minl MINLEN] [-maxl MAXLEN] [-k K_MER] [-t THREADS]
 
 ```
