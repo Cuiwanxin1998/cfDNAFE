@@ -31,12 +31,14 @@ def main():
     maxlen = args.maxLen
     k_mer = args.k_mer
     threads = args.threads
+    mapQuality = args.mapQuality
     runBamProcess(
         bamInput=bamInput,
         blacklistInput=blacklistInput,
         outputdir=outputdir,
         genome_reference=genome_reference,
         chr=chr,
+        mapQuality=mapQuality,
         fragFilter=fragFilter,
         minlen=minlen,
         maxlen=maxlen,
@@ -55,6 +57,8 @@ def parse_args():
             help="genome reference .fa file")
     parser.add_argument('-o', '--output',  type=str,
             help='output result folder')
+    parser.add_argument('-m', '--mapQuality',  type=int, default=30,
+            help='Min fragment quality')
     parser.add_argument('-c', '--chr',  type=list, default=['chr1', 'chr2', 'chr3', 'chr4', 'chr5', 'chr6', 'chr7', 'chr8', 'chr9', 'chr10','chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr18', 'chr19', 'chr20', 'chr21','chr22', 'chrX']
                         , help="Chromosomes to be processed")
     parser.add_argument('-f', '--fragFilter',  action='store_true',
