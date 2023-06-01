@@ -70,8 +70,8 @@ class runMutation(Base):
             )
         else:
             self.setOutput("outputdir", outputdir)
-        if not os.path.exists(outputdir):
-            os.mkdir(outputdir)
+        if not os.path.exists(self.getOutput('outputdir')):
+            os.mkdir(self.getOutput('outputdir'))
         vcfPath = os.path.join(self.getOutput('outputdir'), 'vcfpath')
         if not os.path.exists(vcfPath):
             os.mkdir(vcfPath)
